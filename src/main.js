@@ -4,6 +4,9 @@ import {createSiteFilterTemplate} from "./components/site-filter.js";
 import {createSiteSortTemplate} from "./components/site-sort.js";
 import {createSiteFormTemplate} from "./components/site-form.js";
 import {createPointTemplate} from "./components/point.js";
+import {generatePoint} from "./mock/point.js";
+
+const point = generatePoint();
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -21,5 +24,5 @@ render(siteTripMain, createRouteInformationTemplate(), `afterBegin`);
 render(siteTripControlHeaderMenu, createSiteMenuTemplate(), `afterEnd`);
 render(siteTripControlHeaderFilter, createSiteFilterTemplate(), `afterEnd`);
 render(siteTripEventElement, createSiteSortTemplate(), `beforeEnd`);
-render(siteTripEventElement, createSiteFormTemplate(), `beforeEnd`);
+render(siteTripEventElement, createSiteFormTemplate(point), `beforeEnd`);
 render(siteTripEventElement, createPointTemplate(), `beforeEnd`);
