@@ -11,7 +11,7 @@ const createOffer = (offer, isChecked) => {
     </div>`
   );
 };
-const createSiteForm = (type, city, offers) => {
+const createSiteForm = (type, city, pretext, offers) => {
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   return (
     `<header class="event__header">
@@ -85,7 +85,7 @@ const createSiteForm = (type, city, offers) => {
 
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
-        ${type} to
+        ${type} ${pretext}
       </label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
       <datalist id="destination-list-1">
@@ -146,7 +146,7 @@ const createSiteForm = (type, city, offers) => {
 };
 export const createSiteFormTemplate = (point) => {
 
-  const siteForm = createSiteForm(point.type, point.city, point.offers);
+  const siteForm = createSiteForm(point.type, point.city, point.pretext, point.offers);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
