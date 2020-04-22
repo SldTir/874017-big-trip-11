@@ -1,3 +1,7 @@
+const createDescriptions = (descriptions) => {
+  return descriptions.join(` `);
+};
+
 const createOffer = (offer, isChecked) => {
   const {service, price, value} = offer;
   return (
@@ -11,8 +15,9 @@ const createOffer = (offer, isChecked) => {
     </div>`
   );
 };
-const createSiteForm = (type, city, pretext, offers) => {
+const createSiteForm = (type, city, pretext, offers, descriptions) => {
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
+  const descriptionMarkup = createDescriptions(descriptions);
   return (
     `<header class="event__header">
     <div class="event__type-wrapper">
@@ -129,7 +134,7 @@ const createSiteForm = (type, city, pretext, offers) => {
 
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${city} is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake ${city}). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+      <p class="event__destination-description">${descriptionMarkup}</p>
 
       <div class="event__photos-container">
         <div class="event__photos-tape">
@@ -146,7 +151,7 @@ const createSiteForm = (type, city, pretext, offers) => {
 };
 export const createSiteFormTemplate = (point) => {
 
-  const siteForm = createSiteForm(point.type, point.city, point.pretext, point.offers);
+  const siteForm = createSiteForm(point.type, point.city, point.pretext, point.offers, point.descriptions);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
