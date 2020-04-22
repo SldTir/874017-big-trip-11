@@ -1,6 +1,7 @@
 import {getRandomArrayItem, getRandomNumber} from "../components/utils.js";
 const NUMBER_OFFERS = 5;
 const COMPENSATOR = 1;
+const NUMBER_IMAGE = 5;
 const types = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 const citys = [`Almaty`, `Bandung`, `Havana`, `Astana`, `Bucharest`, `Jerusalem`, `Gwangju`, `Liverpool`, `Mexico`, `Osaka`];
 const offers = [{
@@ -40,19 +41,6 @@ const descriptions = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-const generateRandomDescription = () => {
-  const randomDescriptions = [];
-  for (let index = 0; index <= getRandomNumber(NUMBER_OFFERS); index++) {
-    let description = getRandomArrayItem(descriptions);
-    if (!randomDescriptions.includes(description)) {
-      randomDescriptions.push(description);
-    } else {
-      index = index - COMPENSATOR;
-    }
-  }
-  return randomDescriptions;
-};
-
 const choosesPretext = function (element) {
   switch (element) {
     case `Sightseeing`:
@@ -66,6 +54,32 @@ const choosesPretext = function (element) {
   }
 };
 
+const generateRandomDescription = () => {
+  const randomDescriptions = [];
+  for (let index = 0; index <= getRandomNumber(NUMBER_OFFERS); index++) {
+    let description = getRandomArrayItem(descriptions);
+    if (!randomDescriptions.includes(description)) {
+      randomDescriptions.push(description);
+    } else {
+      index = index - COMPENSATOR;
+    }
+  }
+  return randomDescriptions;
+};
+
+const generateRanodmImagas = () => {
+  const images = [];
+  for (let index = 0; index <= getRandomNumber(NUMBER_IMAGE); index++) {
+    let randomNumber = getRandomNumber(NUMBER_IMAGE);
+    let image = `<img class="event__photo" src="img/photos/${randomNumber}.jpg" alt="Event photo">`;
+    if (!images.includes(image)) {
+      images.push(image);
+    } else {
+      index = index - COMPENSATOR;
+    }
+  }
+  return images;
+};
 
 const generatePoint = function () {
   const type = getRandomArrayItem(types);
@@ -75,6 +89,7 @@ const generatePoint = function () {
     pretext: choosesPretext(type),
     offers,
     descriptions: generateRandomDescription(),
+    images: generateRanodmImagas(),
   }
   );
 };

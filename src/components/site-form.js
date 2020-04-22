@@ -1,3 +1,7 @@
+const createImages = (images) => {
+  return images.join(`\n`);
+};
+
 const createDescriptions = (descriptions) => {
   return descriptions.join(` `);
 };
@@ -15,9 +19,10 @@ const createOffer = (offer, isChecked) => {
     </div>`
   );
 };
-const createSiteForm = (type, city, pretext, offers, descriptions) => {
+const createSiteForm = (type, city, pretext, offers, descriptions, images) => {
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
+  const imagesMarkup = createImages(images);
   return (
     `<header class="event__header">
     <div class="event__type-wrapper">
@@ -138,11 +143,7 @@ const createSiteForm = (type, city, pretext, offers, descriptions) => {
 
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+          ${imagesMarkup}
         </div>
       </div>
     </section>
@@ -151,7 +152,7 @@ const createSiteForm = (type, city, pretext, offers, descriptions) => {
 };
 export const createSiteFormTemplate = (point) => {
 
-  const siteForm = createSiteForm(point.type, point.city, point.pretext, point.offers, point.descriptions);
+  const siteForm = createSiteForm(point.type, point.city, point.pretext, point.offers, point.descriptions, point.images);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
