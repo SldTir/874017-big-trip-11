@@ -1,23 +1,24 @@
-const createPoint = (typePoint, city) => {
+const createPoint = (point) => {
+  const {type, city, pretext, startTime, endTime, price} = point;
   return (`
   <li class="trip-events__item">
   <div class="event">
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/${typePoint}.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${typePoint} to ${city}</h3>
+    <h3 class="event__title">${type} ${pretext} ${city}</h3>
 
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T14:30">14:30</time>
+        <time class="event__start-time" datetime="2019-03-18T14:30">${startTime}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T16:05">16:05</time>
+        <time class="event__end-time" datetime="2019-03-18T16:05">${endTime}</time>
       </p>
       <p class="event__duration">1H 35M</p>
     </div>
 
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">160</span>
+      &euro;&nbsp;<span class="event__price-value">${price}</span>
     </p>
 
     <h4 class="visually-hidden">Offers:</h4>
@@ -37,39 +38,8 @@ const createPoint = (typePoint, city) => {
   `);
 };
 
-export const createPointTemplate = () => {
-  const pointsMarkup = [{
-    type: `Taxi`,
-    city: `Almaty`,
-  }, {
-    type: `Bus`,
-    city: `Bandung`,
-  }, {
-    type: `Train`,
-    city: `Havana`,
-  }, {
-    type: `Ship`,
-    city: `Astana`,
-  }, {
-    type: `Transport`,
-    city: `Bucharest`,
-  }, {
-    type: `Drive`,
-    city: `Jerusalem`,
-  }, {
-    type: `Flight`,
-    city: `Gwangju`,
-  }, {
-    type: `Check`,
-    city: `Liverpool`,
-  }, {
-    type: `Sightseeing`,
-    city: `Mexico`,
-  }, {
-    type: `Restaurant`,
-    city: `Osaka`,
-  }].map((element) => createPoint(element.type, element.city)).slice(0, 3).join(`\n`);
-
+export const createPointTemplate = (point) => {
+  const pointsMarkup = createPoint(point);
   return (
     `<ul class="trip-days">
       <li class="trip-days__item  day">

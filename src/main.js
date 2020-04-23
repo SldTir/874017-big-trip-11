@@ -4,7 +4,7 @@ import {createSiteFilterTemplate} from "./components/site-filter.js";
 import {createSiteSortTemplate} from "./components/site-sort.js";
 import {createSiteFormTemplate} from "./components/site-form.js";
 import {createPointTemplate} from "./components/point.js";
-import {generatePoint} from "./mock/point-form.js";
+import {generatePoint} from "./mock/point.js";
 
 const point = generatePoint();
 
@@ -25,4 +25,4 @@ render(siteTripControlHeaderMenu, createSiteMenuTemplate(), `afterEnd`);
 render(siteTripControlHeaderFilter, createSiteFilterTemplate(), `afterEnd`);
 render(siteTripEventElement, createSiteSortTemplate(), `beforeEnd`);
 render(siteTripEventElement, createSiteFormTemplate(point), `beforeEnd`);
-render(siteTripEventElement, createPointTemplate(), `beforeEnd`);
+render(siteTripEventElement, createPointTemplate(point), `beforeEnd`);

@@ -16,4 +16,8 @@ const getRandomNumberCeil = (length) => {
   return Math.ceil(Math.random() * length);
 };
 
-export {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil};
+const getRandomNumberMinMax = (min, max) => {
+  return Math.ceil(Math.random() * (max - min)) + min;
+};
+
+export {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax};

@@ -19,10 +19,16 @@ const createOffer = (offer, isChecked) => {
     </div>`
   );
 };
-const createSiteForm = (type, city, pretext, offers, descriptions, images) => {
+const createSiteForm = (point) => {
+  const {type, city, pretext, offers, descriptions, images, startDate, startTime, endDate, endTime} = point;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
+  const startDateMarkup = startDate;
+  const startTimeMarkip = startTime;
+  const endDateMarkup = endDate;
+  const endTimeMarkup = endTime;
+
   return (
     `<header class="event__header">
     <div class="event__type-wrapper">
@@ -110,12 +116,12 @@ const createSiteForm = (type, city, pretext, offers, descriptions, images) => {
       <label class="visually-hidden" for="event-start-time-1">
         From
       </label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 00:00">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateMarkup} ${startTimeMarkip}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">
         To
       </label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 00:00">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDateMarkup} ${endTimeMarkup}">
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -152,7 +158,7 @@ const createSiteForm = (type, city, pretext, offers, descriptions, images) => {
 };
 export const createSiteFormTemplate = (point) => {
 
-  const siteForm = createSiteForm(point.type, point.city, point.pretext, point.offers, point.descriptions, point.images);
+  const siteForm = createSiteForm(point);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
