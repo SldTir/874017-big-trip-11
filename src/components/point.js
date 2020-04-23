@@ -1,4 +1,4 @@
-const createPoint = (point) => {
+export const createPoint = (point) => {
   const {type, city, pretext, startTime, endTime, price} = point;
   return (`
   <li class="trip-events__item">
@@ -36,18 +36,4 @@ const createPoint = (point) => {
   </div>
 </li>
   `);
-};
-
-export const createPointTemplate = (point) => {
-  const pointsMarkup = createPoint(point);
-  return (
-    `<ul class="trip-days">
-      <li class="trip-days__item  day">
-        <div class="day__info"></div>
-        <ul class="trip-events__list">
-          ${pointsMarkup}
-        </ul>
-      </li>
-    </ul>`
-  );
 };

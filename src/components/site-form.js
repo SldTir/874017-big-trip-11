@@ -19,15 +19,18 @@ const createOffer = (offer, isChecked) => {
     </div>`
   );
 };
+
+const formateDate = (date) => {
+  return `${date.getDay()}/${date.getMonth()}/${String(date.getYear()).slice(1)} ${date.getHours()}:${date.getMinutes()}`;
+};
+
 const createSiteForm = (point) => {
   const {type, city, pretext, offers, descriptions, images, startDate, startTime, endDate, endTime} = point;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
-  const startDateMarkup = startDate;
-  const startTimeMarkip = startTime;
-  const endDateMarkup = endDate;
-  const endTimeMarkup = endTime;
+  const startDateMarkup = formateDate(new Date(startDate));
+  const endDateMarkup = formateDate(new Date(endDate));
 
   return (
     `<header class="event__header">
@@ -116,12 +119,12 @@ const createSiteForm = (point) => {
       <label class="visually-hidden" for="event-start-time-1">
         From
       </label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateMarkup} ${startTimeMarkip}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateMarkup}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">
         To
       </label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDateMarkup} ${endTimeMarkup}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDateMarkup}">
     </div>
 
     <div class="event__field-group  event__field-group--price">

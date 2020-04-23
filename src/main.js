@@ -4,9 +4,13 @@ import {createSiteFilterTemplate} from "./components/site-filter.js";
 import {createSiteSortTemplate} from "./components/site-sort.js";
 import {createSiteFormTemplate} from "./components/site-form.js";
 import {createPointTemplate} from "./components/point.js";
-import {generatePoint} from "./mock/point.js";
+import {generatePoints} from "./mock/point.js";
+import {dayList} from "./components/day-list";
+import {createDayInfo} from "./components/day-info";
 
-const point = generatePoint();
+
+const points = generatePoints(22).sort((a, b) => a.startDate - b.startDate);
+const tripDays = [...new Set(points.map((element) => new Date(element.startDate).toLocaleDateString()))];
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -24,5 +28,15 @@ render(siteTripMain, createRouteInformationTemplate(), `afterBegin`);
 render(siteTripControlHeaderMenu, createSiteMenuTemplate(), `afterEnd`);
 render(siteTripControlHeaderFilter, createSiteFilterTemplate(), `afterEnd`);
 render(siteTripEventElement, createSiteSortTemplate(), `beforeEnd`);
-render(siteTripEventElement, createSiteFormTemplate(point), `beforeEnd`);
-render(siteTripEventElement, createPointTemplate(point), `beforeEnd`);
+// render(siteTripEventElement, createSiteFormTemplate(tripDays), `beforeEnd`);
+render(siteTripEventElement, dayList(), `beforeEnd`);
+
+const dayListElement = document.querySelector(`.trip-days`);
+tripDays.map((day, index) => {
+  render(dayListElement, createDayInfo(day, index), `beforeEnd`);
+  const tripDayEvents = points.filter((point) => {
+    return new Date(point.startDate).toLocaleDateString() === day;
+  });
+  console.log(day);
+  console.log(tripDayEvents);
+});
