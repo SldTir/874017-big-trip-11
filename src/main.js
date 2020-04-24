@@ -10,7 +10,7 @@ import {createDayInfo} from "./components/day-info";
 
 
 const points = generatePoints(22).sort((a, b) => a.startDate - b.startDate);
-const tripDays = [...new Set(points.map((element) => new Date(element.startDate).toLocaleDateString()))];
+const tripDays = [...new Set(points.map((element) => new Date(element.startDate).toDateString()))];
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -28,14 +28,14 @@ render(siteTripMain, createRouteInformationTemplate(), `afterBegin`);
 render(siteTripControlHeaderMenu, createSiteMenuTemplate(), `afterEnd`);
 render(siteTripControlHeaderFilter, createSiteFilterTemplate(), `afterEnd`);
 render(siteTripEventElement, createSiteSortTemplate(), `beforeEnd`);
-// render(siteTripEventElement, createSiteFormTemplate(tripDays), `beforeEnd`);
+render(siteTripEventElement, createSiteFormTemplate(points.slice(0, 1)), `beforeEnd`);
 render(siteTripEventElement, dayList(), `beforeEnd`);
 
 const dayListElement = document.querySelector(`.trip-days`);
 tripDays.map((day, index) => {
   render(dayListElement, createDayInfo(day, index), `beforeEnd`);
   const tripDayEvents = points.filter((point) => {
-    return new Date(point.startDate).toLocaleDateString() === day;
+    return new Date(point.startDate).toDateString() === day;
   });
   console.log(day);
   console.log(tripDayEvents);

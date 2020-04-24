@@ -24,8 +24,8 @@ const formateDate = (date) => {
   return `${date.getDay()}/${date.getMonth()}/${String(date.getYear()).slice(1)} ${date.getHours()}:${date.getMinutes()}`;
 };
 
-const createSiteForm = (point) => {
-  const {type, city, pretext, offers, descriptions, images, startDate, startTime, endDate, endTime} = point;
+const createSiteForm = (points) => {
+  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = points[0];
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);

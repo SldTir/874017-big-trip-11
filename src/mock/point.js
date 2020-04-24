@@ -96,16 +96,9 @@ const generateRandomDate = () => {
   return dueDate;
 };
 
-const generateRandomTime = () => {
-  const randomHour = String(getRandomNumberMinMax(0, 24)).padStart(2, `0`);
-  const randomMinute = String(getRandomNumberMinMax(0, 60)).padStart(2, `0`);
-  const randomTime = randomHour + `:` + randomMinute;
-  return randomTime;
-};
-
 const generatePoint = function () {
-  const date1 = generateRandomDate();
-  const date2 = generateRandomDate();
+  const dateOne = generateRandomDate();
+  const dateTwo = generateRandomDate();
   const type = getRandomArrayItem(types);
   return ({
     type,
@@ -114,10 +107,8 @@ const generatePoint = function () {
     offers,
     descriptions: generateRandomDescription(),
     images: generateRanodmImagas(),
-    startDate: Math.min(date1.getTime(), date2.getTime()),
-    startTime: generateRandomTime(),
-    endDate: Math.max(date1.getTime(), date2.getTime()),
-    endTime: generateRandomTime(),
+    startDate: Math.min(dateOne.getTime(), dateTwo.getTime()),
+    endDate: Math.max(dateOne.getTime(), dateTwo.getTime()),
     price: getRandomNumberMinMax(100, 1000),
   }
   );
