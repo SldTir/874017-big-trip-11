@@ -1,5 +1,19 @@
+const msDay = 86400000;
+const msHours = 3600000;
+const msMinutes = 60000;
+
+const createTimeDifference = (timeDifference) => {
+  const letTime = timeDifference;
+  const date = Math.trunc(letTime / msDay);
+  const hours = Math.trunc((letTime - date * msDay) / msHours);
+  const minutes = Math.trunc((letTime - (date * msDay) - (hours * msHours)) / msMinutes);
+  return `${date}D ${hours}H ${minutes}M`;
+};
 export const createPoint = (point) => {
-  const {type, city, pretext, startTime, endTime, price} = point;
+  const {type, city, pretext, startDate, endDate, price, timeDifference} = point;
+  const startTime = new Date(startDate).getHours() + `:` + new Date(startDate).getMinutes();
+  const endTime = new Date(endDate).getHours() + `:` + new Date(endDate).getMinutes();
+  const differenceMarkup = createTimeDifference(timeDifference);
   return (`
   <li class="trip-events__item">
   <div class="event">
@@ -14,7 +28,7 @@ export const createPoint = (point) => {
         &mdash;
         <time class="event__end-time" datetime="2019-03-18T16:05">${endTime}</time>
       </p>
-      <p class="event__duration">1H 35M</p>
+      <p class="event__duration">${differenceMarkup}</p>
     </div>
 
     <p class="event__price">

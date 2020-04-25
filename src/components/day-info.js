@@ -1,4 +1,4 @@
-export const createDayInfo = (day, index) => {
+export const createDayInfo = (day, index, daysEventsMarkup) => {
   return (
     `<li class="trip-days__item  day">
     <div class="day__info">
@@ -6,6 +6,7 @@ export const createDayInfo = (day, index) => {
     <time class="day__date" datetime="2019-03-18">${day.split(` `)[1]} ${day.split(` `)[2]}</time>
     </div>
     <ul class="trip-events__list">
+    ${daysEventsMarkup}
     </ul>
     </li>`
   );

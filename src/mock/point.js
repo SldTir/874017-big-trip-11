@@ -85,20 +85,24 @@ const generateRanodmImagas = () => {
 const generateRandomDate = () => {
   const dueDate = new Date();
   const randomSign = Math.random() > 0.5 ? -1 : 1;
-  const diff = randomSign * getRandomNumberMinMax(0, 10);
+  const diff = randomSign * getRandomNumberMinMax(0, 5);
   dueDate.setDate(dueDate.getDate() + diff);
   dueDate.setHours(getRandomNumberMinMax(0, 24));
   dueDate.setMinutes(getRandomNumberMinMax(0, 60));
-  // const randomDay = dueDate.getDate().toString().padStart(2, `0`);
-  // const randomMonth = dueDate.getMonth().toString().padStart(2, `0`);
-  // const randomYear = Array.from(String(dueDate.getFullYear()), String).slice(2).join(``);
-  // const randomDate = randomDay + `/` + randomMonth + `/` + randomYear;
   return dueDate;
 };
 
+const difference = (startDate, endDate) => {
+  const differenceTime = endDate - startDate;
+  return differenceTime;
+};
+
 const generatePoint = function () {
-  const dateOne = generateRandomDate();
-  const dateTwo = generateRandomDate();
+  const dateOne = generateRandomDate().getTime();
+  const dateTwo = generateRandomDate().getTime();
+  const startDate = Math.min(dateOne, dateTwo);
+  const endDate = Math.max(dateOne, dateTwo);
+
   const type = getRandomArrayItem(types);
   return ({
     type,
@@ -107,9 +111,10 @@ const generatePoint = function () {
     offers,
     descriptions: generateRandomDescription(),
     images: generateRanodmImagas(),
-    startDate: Math.min(dateOne.getTime(), dateTwo.getTime()),
-    endDate: Math.max(dateOne.getTime(), dateTwo.getTime()),
+    startDate,
+    endDate,
     price: getRandomNumberMinMax(100, 1000),
+    timeDifference: difference(startDate, endDate),
   }
   );
 };

@@ -21,7 +21,13 @@ const createOffer = (offer, isChecked) => {
 };
 
 const formateDate = (date) => {
-  return `${date.getDay()}/${date.getMonth()}/${String(date.getYear()).slice(1)} ${date.getHours()}:${date.getMinutes()}`;
+  const day = date.getDate().toString().padStart(2, `0`);
+  const month = (date.getMonth() + 1).toString().padStart(2, `0`);
+  const year = String(date.getFullYear()).slice(2);
+  const hours = date.getHours().toString().padStart(2, `0`);
+  const minutes = date.getMinutes().toString().padStart(2, `0`);
+
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
 const createSiteForm = (points) => {

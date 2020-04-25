@@ -3,13 +3,14 @@ import {createSiteMenuTemplate} from "./components/site-menu.js";
 import {createSiteFilterTemplate} from "./components/site-filter.js";
 import {createSiteSortTemplate} from "./components/site-sort.js";
 import {createSiteFormTemplate} from "./components/site-form.js";
-import {createPointTemplate} from "./components/point.js";
+import {createPoint} from "./components/point.js";
 import {generatePoints} from "./mock/point.js";
 import {dayList} from "./components/day-list";
 import {createDayInfo} from "./components/day-info";
 
+const COUNT_POINT = 15;
 
-const points = generatePoints(22).sort((a, b) => a.startDate - b.startDate);
+const points = generatePoints(COUNT_POINT).sort((a, b) => a.startDate - b.startDate);
 const tripDays = [...new Set(points.map((element) => new Date(element.startDate).toDateString()))];
 
 const render = (container, template, place) => {
@@ -33,10 +34,11 @@ render(siteTripEventElement, dayList(), `beforeEnd`);
 
 const dayListElement = document.querySelector(`.trip-days`);
 tripDays.map((day, index) => {
-  render(dayListElement, createDayInfo(day, index), `beforeEnd`);
   const tripDayEvents = points.filter((point) => {
     return new Date(point.startDate).toDateString() === day;
   });
-  console.log(day);
-  console.log(tripDayEvents);
+  const daysEventsMarkup = tripDayEvents.map((element) => {
+    return createPoint(element);
+  }).join(`\n`);
+  render(dayListElement, createDayInfo(day, index, daysEventsMarkup), `beforeEnd`);
 });
