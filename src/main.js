@@ -11,7 +11,7 @@ import {createDayInfo} from "./components/day-info";
 const COUNT_POINT = 15;
 
 const points = generatePoints(COUNT_POINT).sort((a, b) => a.startDate - b.startDate);
-const tripDays = [...new Set(points.map((element) => new Date(element.startDate).toDateString()))];
+const tripDays = [...new Set(points.slice(1).map((element) => new Date(element.startDate).toDateString()))];
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -34,7 +34,7 @@ render(siteTripEventElement, dayList(), `beforeEnd`);
 
 const dayListElement = document.querySelector(`.trip-days`);
 tripDays.map((day, index) => {
-  const tripDayEvents = points.filter((point) => {
+  const tripDayEvents = points.slice(1).filter((point) => {
     return new Date(point.startDate).toDateString() === day;
   });
   const daysEventsMarkup = tripDayEvents.map((element) => {

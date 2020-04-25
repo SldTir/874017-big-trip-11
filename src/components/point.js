@@ -1,13 +1,17 @@
 const msDay = 86400000;
 const msHours = 3600000;
 const msMinutes = 60000;
+const filtersBusValues = (value, unit) => {
+  const filteredValue = value ? `${value}${unit}` : ``;
+  return filteredValue;
+};
 
 const createTimeDifference = (timeDifference) => {
   const letTime = timeDifference;
   const date = Math.trunc(letTime / msDay);
   const hours = Math.trunc((letTime - date * msDay) / msHours);
   const minutes = Math.trunc((letTime - (date * msDay) - (hours * msHours)) / msMinutes);
-  return `${date}D ${hours}H ${minutes}M`;
+  return `${filtersBusValues(date, `D`)} ${filtersBusValues(hours, `H`)} ${filtersBusValues(minutes, `M`)}`;
 };
 export const createPoint = (point) => {
   const {type, city, pretext, startDate, endDate, price, timeDifference} = point;
