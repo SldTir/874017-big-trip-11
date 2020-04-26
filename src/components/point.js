@@ -31,11 +31,12 @@ export const createPoint = (point) => {
   const endTime = new Date(endDate).getHours() + `:` + new Date(endDate).getMinutes();
   const differenceMarkup = createTimeDifference(timeDifference);
   const offersMarkup = createOffersMarkup(offers);
+  const typeLowerCase = type.toLowerCase();
   return (`
   <li class="trip-events__item">
   <div class="event">
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${typeLowerCase}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${pretext} ${city}</h3>
 
