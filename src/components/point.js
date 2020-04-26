@@ -6,6 +6,18 @@ const filtersBusValues = (value, unit) => {
   return filteredValue;
 };
 
+const createOffersMarkup = (offers) => {
+  const offersMarkup = offers.slice(0, 2).map((offer) => {
+    return (
+      `<li class="event__offer">
+      <span class="event__offer-title">${offer.service}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+     </li>`);
+  }).join(`\n`);
+  return offersMarkup;
+};
+
 const createTimeDifference = (timeDifference) => {
   const letTime = timeDifference;
   const date = Math.trunc(letTime / msDay);
@@ -14,15 +26,16 @@ const createTimeDifference = (timeDifference) => {
   return `${filtersBusValues(date, `D`)} ${filtersBusValues(hours, `H`)} ${filtersBusValues(minutes, `M`)}`;
 };
 export const createPoint = (point) => {
-  const {type, city, pretext, startDate, endDate, price, timeDifference} = point;
+  const {type, city, pretext, offers, startDate, endDate, price, timeDifference} = point;
   const startTime = new Date(startDate).getHours() + `:` + new Date(startDate).getMinutes();
   const endTime = new Date(endDate).getHours() + `:` + new Date(endDate).getMinutes();
   const differenceMarkup = createTimeDifference(timeDifference);
+  const offersMarkup = createOffersMarkup(offers);
   return (`
   <li class="trip-events__item">
   <div class="event">
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${pretext} ${city}</h3>
 
@@ -41,11 +54,7 @@ export const createPoint = (point) => {
 
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">Rent a car</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">200</span>
-      </li>
+      ${offersMarkup}
     </ul>
 
     <button class="event__rollup-btn" type="button">

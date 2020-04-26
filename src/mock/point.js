@@ -82,6 +82,19 @@ const generateRanodmImagas = () => {
   return images;
 };
 
+const generateRanodmArray = (array) => {
+  const randomArray = [];
+  for (let index = 0; index <= getRandomNumberFloor(array.length); index++) {
+    let randomElement = getRandomArrayItem(array);
+    if (!randomArray.includes(randomElement)) {
+      randomArray.push(randomElement);
+    } else {
+      index = index - COMPENSATOR;
+    }
+  }
+  return randomArray;
+};
+
 const generateRandomDate = () => {
   const dueDate = new Date();
   const randomSign = Math.random() > 0.5 ? -1 : 1;
@@ -108,7 +121,7 @@ const generatePoint = function () {
     type,
     city: getRandomArrayItem(citys),
     pretext: choosesPretext(type),
-    offers,
+    offers: generateRanodmArray(offers),
     descriptions: generateRandomDescription(),
     images: generateRanodmImagas(),
     startDate,
