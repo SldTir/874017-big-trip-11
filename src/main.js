@@ -26,30 +26,45 @@ render(siteTripMain, new RouteInformationComponent().getElement(), RenderPositio
 render(siteTropControl, new SiteMenuComponent().getElement(), RenderPosition.AFTER_END, siteTripControlHeaderMenu);
 render(siteTropControl, new SiteFilterComponent().getElement(), RenderPosition.AFTER_END, siteTripControlHeaderFilter);
 
-const renderPoint = (dayListElement, point) => {
-  render(dayListElement, new DayInfoComponent(point), RenderPosition.BEFOREEND);
+// const renderPoint = (point) => {
+//   const dayListElement = document.querySelector(`.trip-days`);
+//   render(dayListElement, new PointComponent(point).getElement(), RenderPosition.AFTERBEGIN);
+// };
+
+const renderDateInfo = (day, index) => {
+  const dayListElement = document.querySelector(`.trip-days`);
+  render(dayListElement, new DayInfoComponent(day, index).getElement(), RenderPosition.BEFOREEND);
 };
 
-const renderTripEvents = (points) => {
+const renderTravelMap = (arrays) => {
   render(siteTripEventElement, new SiteSortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(siteTripEventElement, new SiteFormComponent(points.slice(0, 1)).getElement(), RenderPosition.BEFOREEND);
+  render(siteTripEventElement, new SiteFormComponent(arrays.slice(0, 1)).getElement(), RenderPosition.BEFOREEND);
   render(siteTripEventElement, new DayListComponent().getElement(), RenderPosition.BEFOREEND);
 
-  const dayListElement = document.querySelector(`.trip-days`);
-
-  tripDays.map((day) => {
+  tripDays.map((day, index) => {
     const tripDayEvents = points.slice(1).filter((point) => {
       return new Date(point.startDate).toDateString() === day;
     });
 
-    const daysEventsMarkup = tripDayEvents.map((element) => {
-      return new PointComponent(element).getElement();
-    });
+    renderDateInfo(day, index);
 
-    daysEventsMarkup.forEach((point) => {
-      renderPoint(dayListElement, point);
-    });
+    // tripDayEvents.map((element) => {
+    //   return renderPoint(element);
+    // });
+
+    // render(dayListElement, createDayInfo(day, index, daysEventsMarkup), `beforeEnd`);
   });
+
 };
 
-renderTripEvents(points);
+renderTravelMap(points);
+
+// tripDays.map((day, index) => {
+//   const tripDayEvents = points.slice(1).filter((point) => {
+//     return new Date(point.startDate).toDateString() === day;
+//   });
+//   const daysEventsMarkup = tripDayEvents.map((element) => {
+//     return createPoint(element);
+//   }).join(`\n`);
+//   render(dayListElement, createDayInfo(day, index, daysEventsMarkup), `beforeEnd`);
+// });
