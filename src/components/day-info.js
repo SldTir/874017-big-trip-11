@@ -1,4 +1,8 @@
-export const createDayInfo = (day, index, daysEventsMarkup) => {
+import {createElement} from "./utils.js";
+
+const createDayInfo = (point, index) => {
+  const {day, daysEventsMarkup} = point;
+
   return (
     `<li class="trip-days__item  day">
     <div class="day__info">
@@ -11,3 +15,27 @@ export const createDayInfo = (day, index, daysEventsMarkup) => {
     </li>`
   );
 };
+
+export default class DayInfo {
+  constructor(point, index) {
+    this._point = point;
+    this._index = index;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDayInfo(this._point, this._index);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

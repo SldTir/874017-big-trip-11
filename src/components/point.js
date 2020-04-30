@@ -1,3 +1,5 @@
+import {createElement} from "./utils.js";
+
 const msDay = 86400000;
 const msHours = 3600000;
 const msMinutes = 60000;
@@ -25,7 +27,8 @@ const createTimeDifference = (timeDifference) => {
   const minutes = Math.trunc((letTime - (date * msDay) - (hours * msHours)) / msMinutes);
   return `${filtersBusValues(date, `D`)} ${filtersBusValues(hours, `H`)} ${filtersBusValues(minutes, `M`)}`;
 };
-export const createPoint = (point) => {
+
+const createPoint = (point) => {
   const {type, city, pretext, offers, startDate, endDate, price, timeDifference} = point;
   const startTime = new Date(startDate).getHours() + `:` + new Date(startDate).getMinutes();
   const endTime = new Date(endDate).getHours() + `:` + new Date(endDate).getMinutes();
@@ -65,3 +68,25 @@ export const createPoint = (point) => {
 </li>
   `);
 };
+
+export default class Point {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPoint(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,3 +1,5 @@
+import {createElement} from "./utils.js";
+
 const createImages = (images) => {
   return images.join(`\n`);
 };
@@ -30,8 +32,8 @@ const formateDate = (date) => {
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
-const createSiteForm = (points) => {
-  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = points[0];
+const createSiteForm = (point) => {
+  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = point[0];
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
@@ -166,7 +168,7 @@ const createSiteForm = (points) => {
   </section>`
   );
 };
-export const createSiteFormTemplate = (point) => {
+const createSiteFormTemplate = (point) => {
 
   const siteForm = createSiteForm(point);
 
@@ -176,3 +178,26 @@ export const createSiteFormTemplate = (point) => {
   </form>`
   );
 };
+
+export default class SiteForm {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
