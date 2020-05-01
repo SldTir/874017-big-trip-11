@@ -6,6 +6,7 @@ import SiteFormComponent from "./components/site-form.js";
 import PointComponent from "./components/point.js";
 import DayListComponent from "./components/day-list";
 import DayInfoComponent from "./components/day-info";
+import NoPointsComponent from "./components/no-points";
 import {generatePoints} from "./mock/point.js";
 import {render, RenderPosition} from "./components/utils";
 
@@ -70,6 +71,12 @@ const renderPoint = (point, index) => {
 };
 
 const renderTravelMap = () => {
+  const isAllPointsArchived = points.every((point) => point.isArchive);
+
+  if (isAllPointsArchived) {
+    render(siteTripEventElement, new NoPointsComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
   render(siteTripEventElement, new SiteSortComponent().getElement(), RenderPosition.BEFOREEND);
   render(siteTripEventElement, new DayListComponent().getElement(), RenderPosition.BEFOREEND);
 
