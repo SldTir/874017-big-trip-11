@@ -30,7 +30,7 @@ const getRandomNumberMinMax = (min, max) => {
 const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
-
+  console.log(newElement.firstChild);
   return newElement.firstChild;
 };
 

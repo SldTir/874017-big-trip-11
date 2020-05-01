@@ -35,8 +35,8 @@ const createPoint = (point) => {
   const differenceMarkup = createTimeDifference(timeDifference);
   const offersMarkup = createOffersMarkup(offers);
   const typeLowerCase = type.toLowerCase();
-  return (`
-  <li class="trip-events__item">
+  return (
+    `<li class="trip-events__item">
   <div class="event">
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${typeLowerCase}.png" alt="Event type icon">
@@ -65,8 +65,7 @@ const createPoint = (point) => {
       <span class="visually-hidden">Open event</span>
     </button>
   </div>
-</li>
-  `);
+</li>`);
 };
 
 export default class Point {

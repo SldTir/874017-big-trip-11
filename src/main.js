@@ -26,14 +26,15 @@ render(siteTripMain, new RouteInformationComponent().getElement(), RenderPositio
 render(siteTropControl, new SiteMenuComponent().getElement(), RenderPosition.AFTER_END, siteTripControlHeaderMenu);
 render(siteTropControl, new SiteFilterComponent().getElement(), RenderPosition.AFTER_END, siteTripControlHeaderFilter);
 
-// const renderPoint = (point) => {
-//   const dayListElement = document.querySelector(`.trip-days`);
-//   render(dayListElement, new PointComponent(point).getElement(), RenderPosition.AFTERBEGIN);
-// };
-
 const renderDateInfo = (day, index) => {
   const dayListElement = document.querySelector(`.trip-days`);
   render(dayListElement, new DayInfoComponent(day, index).getElement(), RenderPosition.BEFOREEND);
+};
+
+const renderPoint = (point, index) => {
+  const dayListElement = document.querySelectorAll(`.trip-events__list`);
+  const pointComponent = new PointComponent(point);
+  render(dayListElement[index], pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 const renderTravelMap = (arrays) => {
@@ -48,23 +49,10 @@ const renderTravelMap = (arrays) => {
 
     renderDateInfo(day, index);
 
-    // tripDayEvents.map((element) => {
-    //   return renderPoint(element);
-    // });
-
-    // render(dayListElement, createDayInfo(day, index, daysEventsMarkup), `beforeEnd`);
+    tripDayEvents.forEach((point) => {
+      renderPoint(point, index);
+    });
   });
-
 };
 
 renderTravelMap(points);
-
-// tripDays.map((day, index) => {
-//   const tripDayEvents = points.slice(1).filter((point) => {
-//     return new Date(point.startDate).toDateString() === day;
-//   });
-//   const daysEventsMarkup = tripDayEvents.map((element) => {
-//     return createPoint(element);
-//   }).join(`\n`);
-//   render(dayListElement, createDayInfo(day, index, daysEventsMarkup), `beforeEnd`);
-// });
