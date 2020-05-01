@@ -6,8 +6,8 @@ import SiteFormComponent from "./components/site-form.js";
 import PointComponent from "./components/point.js";
 import DayListComponent from "./components/day-list";
 import DayInfoComponent from "./components/day-info";
-import { generatePoints } from "./mock/point.js";
-import { render, RenderPosition } from "./components/utils";
+import {generatePoints} from "./mock/point.js";
+import {render, RenderPosition} from "./components/utils";
 
 const COUNT_POINT = 15;
 
@@ -33,13 +33,29 @@ const renderDateInfo = (day, index) => {
 
 const renderPoint = (point, index) => {
   const dayListElement = document.querySelectorAll(`.trip-events__list`);
+
+  const onPointClick = () => {
+    dayListElement[index].replaceChild(pointFormComponent.getElement(), pointComponent.getElement());
+  };
+
+  const onPoinFormSubmit = (evt) => {
+    evt.preventDefault();
+    dayListElement[index].replaceChild(pointComponent.getElement(), pointFormComponent.getElement());
+  };
+
   const pointComponent = new PointComponent(point);
+  const editPoint = pointComponent.getElement().querySelector(`.event__rollup-btn`);
+  editPoint.addEventListener(`click`, onPointClick);
+
+  const pointFormComponent = new SiteFormComponent(point);
+  const editFormPoint = pointFormComponent.getElement();
+  editFormPoint.addEventListener(`submit`, onPoinFormSubmit);
+
   render(dayListElement[index], pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-const renderTravelMap = (arrays) => {
+const renderTravelMap = () => {
   render(siteTripEventElement, new SiteSortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(siteTripEventElement, new SiteFormComponent(arrays.slice(0, 1)).getElement(), RenderPosition.BEFOREEND);
   render(siteTripEventElement, new DayListComponent().getElement(), RenderPosition.BEFOREEND);
 
   tripDays.map((day, index) => {
@@ -55,4 +71,4 @@ const renderTravelMap = (arrays) => {
   });
 };
 
-renderTravelMap(points);
+renderTravelMap();

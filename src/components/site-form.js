@@ -33,7 +33,7 @@ const formateDate = (date) => {
 };
 
 const createSiteForm = (point) => {
-  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = point[0];
+  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = point;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
