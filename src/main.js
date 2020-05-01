@@ -12,7 +12,7 @@ import {render, RenderPosition} from "./components/utils";
 const COUNT_POINT = 15;
 
 const points = generatePoints(COUNT_POINT).sort((a, b) => a.startDate - b.startDate);
-const tripDays = [...new Set(points.slice(1).map((element) => new Date(element.startDate).toDateString()))];
+const tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const siteTripMain = siteHeaderElement.querySelector(`.trip-main`);
@@ -59,7 +59,7 @@ const renderTravelMap = () => {
   render(siteTripEventElement, new DayListComponent().getElement(), RenderPosition.BEFOREEND);
 
   tripDays.map((day, index) => {
-    const tripDayEvents = points.slice(1).filter((point) => {
+    const tripDayEvents = points.slice().filter((point) => {
       return new Date(point.startDate).toDateString() === day;
     });
 

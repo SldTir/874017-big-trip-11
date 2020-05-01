@@ -33,7 +33,7 @@ const formateDate = (date) => {
 };
 
 const createSiteForm = (point) => {
-  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = point;
+  const {type, city, pretext, offers, descriptions, images, startDate, endDate, price} = point;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
@@ -141,7 +141,7 @@ const createSiteForm = (point) => {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
