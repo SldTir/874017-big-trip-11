@@ -34,22 +34,37 @@ const renderDateInfo = (day, index) => {
 const renderPoint = (point, index) => {
   const dayListElement = document.querySelectorAll(`.trip-events__list`);
 
-  const onPointClick = () => {
+  const replacePointToForm = () => {
     dayListElement[index].replaceChild(pointFormComponent.getElement(), pointComponent.getElement());
   };
 
-  const onPoinFormSubmit = (evt) => {
-    evt.preventDefault();
+  const replaceFormToPoint = () => {
     dayListElement[index].replaceChild(pointComponent.getElement(), pointFormComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
   };
 
   const pointComponent = new PointComponent(point);
   const editPoint = pointComponent.getElement().querySelector(`.event__rollup-btn`);
-  editPoint.addEventListener(`click`, onPointClick);
+  editPoint.addEventListener(`click`, () => {
+    replacePointToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const pointFormComponent = new SiteFormComponent(point);
   const editFormPoint = pointFormComponent.getElement();
-  editFormPoint.addEventListener(`submit`, onPoinFormSubmit);
+  editFormPoint.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(dayListElement[index], pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
