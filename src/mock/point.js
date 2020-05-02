@@ -1,4 +1,4 @@
-import {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax} from "../components/utils.js";
+import {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax} from "../utils/common.js";
 
 const NUMBER_OFFERS = 5;
 const COMPENSATOR = 1;

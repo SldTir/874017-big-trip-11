@@ -1,4 +1,4 @@
-import {createElement} from "./utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createSiteFilterTemplate = () => {
   return (
@@ -23,24 +23,8 @@ const createSiteFilterTemplate = () => {
   );
 };
 
-export default class SiteFilter {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SiteFilter extends AbstractComponent {
   getTemplate() {
     return createSiteFilterTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

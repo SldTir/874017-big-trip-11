@@ -8,7 +8,7 @@ import DayListComponent from "./components/day-list";
 import DayInfoComponent from "./components/day-info";
 import NoPointsComponent from "./components/no-points";
 import {generatePoints} from "./mock/point.js";
-import {render, RenderPosition} from "./components/utils";
+import {render, replace, RenderPosition} from "./utils/render.js";
 
 const COUNT_POINT = 15;
 
@@ -23,24 +23,24 @@ const siteTripControlHeaderFilter = siteTropControl.querySelector(`h2:nth-child(
 const sitePageMainElement = document.querySelector(`.page-main`);
 const siteTripEventElement = sitePageMainElement.querySelector(`.trip-events`);
 
-render(siteTripMain, new RouteInformationComponent().getElement(), RenderPosition.AFTERBEGIN);
-render(siteTropControl, new SiteMenuComponent().getElement(), RenderPosition.AFTER_END, siteTripControlHeaderMenu);
-render(siteTropControl, new SiteFilterComponent().getElement(), RenderPosition.AFTER_END, siteTripControlHeaderFilter);
+render(siteTripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
+render(siteTropControl, new SiteMenuComponent(), RenderPosition.AFTER_END, siteTripControlHeaderMenu);
+render(siteTropControl, new SiteFilterComponent(), RenderPosition.AFTER_END, siteTripControlHeaderFilter);
 
 const renderDateInfo = (day, index) => {
   const dayListElement = document.querySelector(`.trip-days`);
-  render(dayListElement, new DayInfoComponent(day, index).getElement(), RenderPosition.BEFOREEND);
+  render(dayListElement, new DayInfoComponent(day, index), RenderPosition.BEFOREEND);
 };
 
 const renderPoint = (point, index) => {
   const dayListElement = document.querySelectorAll(`.trip-events__list`);
 
   const replacePointToForm = () => {
-    dayListElement[index].replaceChild(pointFormComponent.getElement(), pointComponent.getElement());
+    replace(pointFormComponent, pointComponent);
   };
 
   const replaceFormToPoint = () => {
-    dayListElement[index].replaceChild(pointComponent.getElement(), pointFormComponent.getElement());
+    replace(pointComponent, pointFormComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -67,18 +67,17 @@ const renderPoint = (point, index) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(dayListElement[index], pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(dayListElement[index], pointComponent, RenderPosition.BEFOREEND);
 };
 
 const renderTravelMap = () => {
-  const isAllPointsArchived = points.every((point) => point.isArchive);
 
-  if (isAllPointsArchived) {
-    render(siteTripEventElement, new NoPointsComponent().getElement(), RenderPosition.BEFOREEND);
+  if (points.length === 0) {
+    render(siteTripEventElement, new NoPointsComponent(), RenderPosition.BEFOREEND);
     return;
   }
-  render(siteTripEventElement, new SiteSortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(siteTripEventElement, new DayListComponent().getElement(), RenderPosition.BEFOREEND);
+  render(siteTripEventElement, new SiteSortComponent(), RenderPosition.BEFOREEND);
+  render(siteTripEventElement, new DayListComponent(), RenderPosition.BEFOREEND);
 
   tripDays.map((day, index) => {
     const tripDayEvents = points.slice().filter((point) => {
