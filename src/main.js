@@ -1,7 +1,7 @@
 import RouteInformationComponent from "./components/route-information.js";
 import SiteMenuComponent from "./components/site-menu.js";
 import SiteFilterComponent from "./components/site-filter.js";
-import MapController from "./controllers/map.js";
+import TripController from "./controllers/map.js";
 import {generatePoints} from "./mock/point.js";
 import {render, RenderPosition} from "./utils/render.js";
 
@@ -23,5 +23,5 @@ render(siteTripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN)
 render(siteTropControl, new SiteMenuComponent(), RenderPosition.AFTER_END, siteTripControlHeaderMenu);
 render(siteTropControl, new SiteFilterComponent(), RenderPosition.AFTER_END, siteTripControlHeaderFilter);
 
-const mapController = new MapController(siteTripEventElement);
+const mapController = new TripController(siteTripEventElement);
 mapController.render(points);

@@ -48,7 +48,7 @@ const renderPoint = (tripEventList, point) => {
   render(tripEventList, pointComponent, RenderPosition.BEFOREEND);
 };
 
-export default class MapController {
+export default class TripController {
   constructor(container) {
     this._container = container;
 
@@ -69,6 +69,8 @@ export default class MapController {
 
     const tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
 
+    render(container, this._dayListComponent, RenderPosition.BEFOREEND);
+
     tripDays.map((day, index) => {
       const tripDayEvents = points.slice().filter((point) => {
         return new Date(point.startDate).toDateString() === day;
@@ -81,7 +83,6 @@ export default class MapController {
         renderPoint(tripEventList, point);
       });
 
-      render(container, this._dayListComponent, RenderPosition.BEFOREEND);
       const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
 
       render(siteTripDays, dateInfo, RenderPosition.BEFOREEND);
