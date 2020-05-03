@@ -4,7 +4,7 @@ import PointComponent from "../components/point.js";
 import DayListComponent from "../components/day-info.js";
 import NoPointsComponent from "../components/no-points";
 import DayInfoComponent from "../components/day-info";
-import { render, replace, RenderPosition } from "../utils/render.js";
+import {render, replace, RenderPosition} from "../utils/render.js";
 
 const renderDateInfo = (container, day, index) => {
   render(container, new DayInfoComponent(day, index), RenderPosition.BEFOREEND);
@@ -48,37 +48,38 @@ const renderPoint = (point, index) => {
   render(dayListElement[index], pointComponent, RenderPosition.BEFOREEND);
 };
 
-const renderTravelMap = (container, points) => {
-
-  if (points.length === 0) {
-    render(container, new NoPointsComponent(), RenderPosition.BEFOREEND);
-    return;
-  }
-
-  render(container, new SiteSortComponent(), RenderPosition.BEFOREEND);
-
-  const tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
-
-  tripDays.map((day, index) => {
-    const tripDayEvents = points.slice().filter((point) => {
-      return new Date(point.startDate).toDateString() === day;
-    });
-
-    renderDateInfo(container, day, index);
-
-    tripDayEvents.forEach((point) => {
-      renderPoint(point, index);
-    });
-  });
-  render(container, new DayListComponent(), RenderPosition.BEFOREEND);
-};
-
 export default class MapController {
   constructor(container) {
     this._container = container;
+
+    this._noPointsComponent = new NoPointsComponent();
+    this._siteSortComponent = new SiteSortComponent();
+    this._dayListComponent = new DayListComponent();
+
   }
 
   render(points) {
-    renderTravelMap(this._container, points);
+    const container = this._container;
+    if (points.length === 0) {
+      render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    render(container, this._siteSortComponent, RenderPosition.BEFOREEND);
+
+    const tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
+
+    tripDays.map((day, index) => {
+      const tripDayEvents = points.slice().filter((point) => {
+        return new Date(point.startDate).toDateString() === day;
+      });
+
+      renderDateInfo(container, day, index);
+
+      tripDayEvents.forEach((point) => {
+        renderPoint(point, index);
+      });
+    });
+    render(container, this._dayListComponent, RenderPosition.BEFOREEND);
   }
 }
