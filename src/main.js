@@ -1,7 +1,7 @@
 import RouteInformationComponent from "./components/route-information.js";
 import SiteMenuComponent from "./components/site-menu.js";
 import SiteFilterComponent from "./components/site-filter.js";
-import TripController from "./controllers/map.js";
+import TripController from "./controllers/trip.js";
 import {generatePoints} from "./mock/point.js";
 import {render, RenderPosition} from "./utils/render.js";
 
