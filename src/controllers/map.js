@@ -4,7 +4,7 @@ import PointComponent from "../components/point.js";
 import DayListComponent from "../components/day-list.js";
 import NoPointsComponent from "../components/no-points";
 import DayInfoComponent from "../components/day-info";
-import { render, replace, RenderPosition } from "../utils/render.js";
+import {render, replace, RenderPosition} from "../utils/render.js";
 
 const sitePageMainElement = document.querySelector(`.page-main`);
 
@@ -32,15 +32,13 @@ const renderPoint = (tripEventList, point) => {
   };
 
   const pointComponent = new PointComponent(point);
-  const editPoint = pointComponent.getElement().querySelector(`.event__rollup-btn`);
-  editPoint.addEventListener(`click`, () => {
+  pointComponent.setClickHandler(() => {
     replacePointToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const pointFormComponent = new SiteFormComponent(point);
-  const editFormPoint = pointFormComponent.getElement();
-  editFormPoint.addEventListener(`submit`, (evt) => {
+  pointFormComponent.setSubmitHandler((evt) => {
     evt.preventDefault();
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);

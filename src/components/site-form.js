@@ -189,4 +189,8 @@ export default class SiteForm extends AbstractComponent {
   getTemplate() {
     return createSiteFormTemplate(this._point);
   }
+
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
+  }
 }
