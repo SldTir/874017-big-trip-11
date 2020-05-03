@@ -1,17 +1,18 @@
 import SiteSortComponent from "../components/site-sort.js";
 import SiteFormComponent from "../components/site-form.js";
 import PointComponent from "../components/point.js";
-import DayListComponent from "../components/day-info.js";
+import DayListComponent from "../components/day-list.js";
 import NoPointsComponent from "../components/no-points";
 import DayInfoComponent from "../components/day-info";
-import {render, replace, RenderPosition} from "../utils/render.js";
+import { render, replace, RenderPosition } from "../utils/render.js";
 
-const renderDateInfo = (container, day, index) => {
-  render(container, new DayInfoComponent(day, index), RenderPosition.BEFOREEND);
+const sitePageMainElement = document.querySelector(`.page-main`);
+
+const renderDateInfo = (day, index) => {
+  const dayInfoComponent = new DayInfoComponent(day, index);
+  return dayInfoComponent;
 };
-
-const renderPoint = (point, index) => {
-  const dayListElement = document.querySelectorAll(`.trip-events__list`);
+const renderPoint = (tripEventList, point) => {
 
   const replacePointToForm = () => {
     replace(pointFormComponent, pointComponent);
@@ -45,7 +46,8 @@ const renderPoint = (point, index) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(dayListElement[index], pointComponent, RenderPosition.BEFOREEND);
+
+  render(tripEventList, pointComponent, RenderPosition.BEFOREEND);
 };
 
 export default class MapController {
@@ -74,12 +76,17 @@ export default class MapController {
         return new Date(point.startDate).toDateString() === day;
       });
 
-      renderDateInfo(container, day, index);
+      const dateInfo = renderDateInfo(day, index);
+      const tripEventList = dateInfo.getElement().querySelector(`.trip-events__list`);
 
       tripDayEvents.forEach((point) => {
-        renderPoint(point, index);
+        renderPoint(tripEventList, point);
       });
+
+      render(container, this._dayListComponent, RenderPosition.BEFOREEND);
+      const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
+
+      render(siteTripDays, dateInfo, RenderPosition.BEFOREEND);
     });
-    render(container, this._dayListComponent, RenderPosition.BEFOREEND);
   }
 }
