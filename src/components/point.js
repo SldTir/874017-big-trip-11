@@ -78,8 +78,4 @@ export default class Point extends AbstractComponent {
   getTemplate() {
     return createPoint(this._point);
   }
-
-  setClickHandler(handler) {
-    this.getElement().addEventListener(`click`, handler);
-  }
 }
