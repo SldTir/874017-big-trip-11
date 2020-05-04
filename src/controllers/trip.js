@@ -1,16 +1,14 @@
-import SiteSortComponent from "../components/site-sort.js";
+import SiteSortComponent, {SortType} from "../components/site-sort.js";
 import SiteFormComponent from "../components/site-form.js";
 import PointComponent from "../components/point.js";
 import DayListComponent from "../components/day-list.js";
 import NoPointsComponent from "../components/no-points";
 import DayInfoComponent from "../components/day-info";
-import SiteFilterComponent, {SortType} from "../components/site-filter.js";
+import SiteFilterComponent from "../components/site-filter.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
 const sitePageMainElement = document.querySelector(`.page-main`);
-const siteHeaderElement = document.querySelector(`.page-header`);
-const siteTropControl = siteHeaderElement.querySelector(`.trip-controls`);
-const siteTripControlHeaderFilter = siteTropControl.querySelector(`h2:nth-child(2)`);
+
 
 const renderDateInfo = (day, index) => {
   const dayInfoComponent = new DayInfoComponent(day, index);
@@ -57,11 +55,11 @@ const getSortedPoints = (points, sortType) => {
   const showingPoints = points.slice();
 
   switch (sortType) {
-    case SortType.FUTURE:
-      sortedPoints = showingPoints.sort((a, b) => b.startDate - a.startDate);
+    case SortType.TIME:
+      sortedPoints = showingPoints.sort((a, b) => b.timeDifference - a.timeDifference);
       break;
-    case SortType.PAST:
-      sortedPoints = showingPoints.sort((a, b) => a.startDate - b.startDate);
+    case SortType.PRICE:
+      sortedPoints = showingPoints.sort((a, b) => b.price - a.price);
       break;
     case SortType.EVERYTHING:
       sortedPoints = showingPoints;
@@ -71,11 +69,17 @@ const getSortedPoints = (points, sortType) => {
   return sortedPoints;
 };
 
-const renderPoints = (points) => {
+const renderDays = (container, points, component) => {
+  render(container, component, RenderPosition.BEFOREEND);
+
   const tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
 
+  const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
+
+  siteTripDays.innerHTML = ``;
+
   tripDays.map((day, index) => {
-    const tripDayEvents = points.slice().filter((point) => {
+    let tripDayEvents = points.slice().filter((point) => {
       return new Date(point.startDate).toDateString() === day;
     });
 
@@ -85,8 +89,6 @@ const renderPoints = (points) => {
     tripDayEvents.forEach((point) => {
       renderPoint(tripEventList, point);
     });
-
-    const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
 
     render(siteTripDays, dateInfo, RenderPosition.BEFOREEND);
   });
@@ -104,8 +106,6 @@ export default class TripController {
   }
 
   render(points) {
-    render(siteTropControl, this._siteFilterComponent, RenderPosition.AFTER_END, siteTripControlHeaderFilter);
-
     const container = this._container;
     if (points.length === 0) {
       render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
@@ -114,18 +114,25 @@ export default class TripController {
 
     render(container, this._siteSortComponent, RenderPosition.BEFOREEND);
 
+    renderDays(container, points, this._dayListComponent);
 
-    render(container, this._dayListComponent, RenderPosition.BEFOREEND);
-
-    renderPoints(points);
-
-    this._siteFilterComponent.setSortTypeChangeHandler((sortType) => {
+    this._siteSortComponent.setSortTypeChangeHandler((sortType) => {
       const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
+
       siteTripDays.innerHTML = ``;
       const sortedPoints = getSortedPoints(points, sortType);
+      if (sortType !== SortType.EVENT) {
+        const dayInfo = new DayInfoComponent();
+        render(siteTripDays, dayInfo, RenderPosition.BEFOREEND);
 
-      renderPoints(sortedPoints);
+        const tripEventListSort = document.querySelector(`.trip-events__list`);
+
+        sortedPoints.forEach((point) => {
+          renderPoint(tripEventListSort, point);
+        });
+      } else {
+        renderDays(container, points, this._dayListComponent);
+      }
     });
   }
 }
-

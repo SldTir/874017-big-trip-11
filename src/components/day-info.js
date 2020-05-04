@@ -1,11 +1,29 @@
 import AbstractComponent from "./abstract-component.js";
 
-const createDayInfo = (day, index) => {
+const checkDay = (day) => {
+  if (day) {
+    const dayText = `${day.split(` `)[1]} ${day.split(` `)[2]}`;
+    return dayText;
+  }
+  return ``;
+};
+
+const checkIndex = (index) => {
+  if (index === false) {
+    return ``;
+  }
+  const indexText = `${index + 1}`;
+  return indexText;
+};
+
+const createDayInfo = (day = false, index = false) => {
+  const timeText = checkDay(day);
+  const indexText = checkIndex(index);
   return (
     `<li class="trip-days__item  day">
     <div class="day__info">
-    <span class="day__counter">${index + 1}</span>
-    <time class="day__date" datetime="2019-03-18">${day.split(` `)[1]} ${day.split(` `)[2]}</time>
+    <span class="day__counter">${indexText}</span>
+    <time class="day__date" datetime="2019-03-18">${timeText}</time>
     </div>
     <ul class="trip-events__list">
     </ul>
