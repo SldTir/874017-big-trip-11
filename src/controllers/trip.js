@@ -71,6 +71,27 @@ const getSortedPoints = (points, sortType) => {
   return sortedPoints;
 };
 
+const renderPoints = (points) => {
+  const tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
+
+  tripDays.map((day, index) => {
+    const tripDayEvents = points.slice().filter((point) => {
+      return new Date(point.startDate).toDateString() === day;
+    });
+
+    const dateInfo = renderDateInfo(day, index);
+    const tripEventList = dateInfo.getElement().querySelector(`.trip-events__list`);
+
+    tripDayEvents.forEach((point) => {
+      renderPoint(tripEventList, point);
+    });
+
+    const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
+
+    render(siteTripDays, dateInfo, RenderPosition.BEFOREEND);
+  });
+};
+
 export default class TripController {
   constructor(container) {
     this._container = container;
@@ -93,48 +114,17 @@ export default class TripController {
 
     render(container, this._siteSortComponent, RenderPosition.BEFOREEND);
 
-    let tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
 
     render(container, this._dayListComponent, RenderPosition.BEFOREEND);
 
-    tripDays.map((day, index) => {
-      const tripDayEvents = points.slice().filter((point) => {
-        return new Date(point.startDate).toDateString() === day;
-      });
-
-      const dateInfo = renderDateInfo(day, index);
-      const tripEventList = dateInfo.getElement().querySelector(`.trip-events__list`);
-
-      tripDayEvents.forEach((point) => {
-        renderPoint(tripEventList, point);
-      });
-
-      const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
-
-      render(siteTripDays, dateInfo, RenderPosition.BEFOREEND);
-    });
+    renderPoints(points);
 
     this._siteFilterComponent.setSortTypeChangeHandler((sortType) => {
       const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
       siteTripDays.innerHTML = ``;
       const sortedPoints = getSortedPoints(points, sortType);
 
-      tripDays = [...new Set(sortedPoints.slice().map((element) => new Date(element.startDate).toDateString()))];
-
-      tripDays.map((day, index) => {
-        const tripDayEvents = points.slice().filter((point) => {
-          return new Date(point.startDate).toDateString() === day;
-        });
-
-        const dateInfo = renderDateInfo(day, index);
-        const tripEventList = dateInfo.getElement().querySelector(`.trip-events__list`);
-
-        tripDayEvents.forEach((point) => {
-          renderPoint(tripEventList, point);
-        });
-
-        render(siteTripDays, dateInfo, RenderPosition.BEFOREEND);
-      });
+      renderPoints(sortedPoints);
     });
   }
 }
