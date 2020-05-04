@@ -76,8 +76,6 @@ const renderDays = (container, points, component) => {
 
   const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
 
-  siteTripDays.innerHTML = ``;
-
   tripDays.map((day, index) => {
     let tripDayEvents = points.slice().filter((point) => {
       return new Date(point.startDate).toDateString() === day;
