@@ -12,12 +12,12 @@ const createSiteSortTemplate = () => {
     <span class="trip-sort__item  trip-sort__item--day"></span>
 
     <div class="trip-sort__item  trip-sort__item--event">
-      <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event">
+      <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" checked>
       <label data-sort-type="${SortType.EVENT}" class="trip-sort__btn" for="sort-event">Event</label>
     </div>
 
     <div class="trip-sort__item  trip-sort__item--time">
-      <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" checked>
+      <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
       <label data-sort-type="${SortType.TIME}" class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-time">
         Time
       </label>
@@ -39,7 +39,7 @@ export default class SiteSort extends AbstractComponent {
   constructor() {
     super();
 
-    this._currenSortType = SortType.TIME;
+    this._currenSortType = SortType.EVENT;
   }
   getTemplate() {
     return createSiteSortTemplate();
@@ -62,6 +62,10 @@ export default class SiteSort extends AbstractComponent {
       if (this._currenSortType === sortType) {
         return;
       }
+
+      const labelFor = evt.target.getAttribute(`for`);
+      const targetImput = document.getElementById(labelFor);
+      targetImput.checked = true;
 
       this._currenSortType = sortType;
 
