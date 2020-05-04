@@ -1,4 +1,4 @@
-import {createElement} from "./utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const msDay = 86400000;
 const msHours = 3600000;
@@ -68,8 +68,9 @@ const createPoint = (point) => {
 </li>`);
 };
 
-export default class Point {
+export default class Point extends AbstractComponent {
   constructor(point) {
+    super();
     this._point = point;
     this._element = null;
   }
@@ -78,14 +79,7 @@ export default class Point {
     return createPoint(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
   }
 }

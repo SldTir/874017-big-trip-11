@@ -1,4 +1,4 @@
-import {createElement} from "./utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createImages = (images) => {
   return images.join(`\n`);
@@ -179,8 +179,9 @@ const createSiteFormTemplate = (point) => {
   );
 };
 
-export default class SiteForm {
+export default class SiteForm extends AbstractComponent {
   constructor(point) {
+    super();
     this._point = point;
     this._element = null;
   }
@@ -189,15 +190,7 @@ export default class SiteForm {
     return createSiteFormTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
   }
 }
