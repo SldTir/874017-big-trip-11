@@ -8,6 +8,9 @@ import SiteFilterComponent from "../components/site-filter.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
 const sitePageMainElement = document.querySelector(`.page-main`);
+const siteHeaderElement = document.querySelector(`.page-header`);
+const siteTropControl = siteHeaderElement.querySelector(`.trip-controls`);
+const siteTripControlHeaderFilter = siteTropControl.querySelector(`h2:nth-child(2)`);
 
 
 const renderDateInfo = (day, index) => {
@@ -109,6 +112,8 @@ export default class TripController {
       render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
       return;
     }
+
+    render(siteTropControl, this._siteFilterComponent, RenderPosition.AFTER_END, siteTripControlHeaderFilter);
 
     render(container, this._siteSortComponent, RenderPosition.BEFOREEND);
 
