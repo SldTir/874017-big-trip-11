@@ -1,6 +1,5 @@
 import RouteInformationComponent from "./components/route-information.js";
 import SiteMenuComponent from "./components/site-menu.js";
-import SiteFilterComponent from "./components/site-filter.js";
 import TripController from "./controllers/trip.js";
 import {generatePoints} from "./mock/point.js";
 import {render, RenderPosition} from "./utils/render.js";
@@ -17,11 +16,9 @@ const siteHeaderElement = document.querySelector(`.page-header`);
 const siteTripMain = siteHeaderElement.querySelector(`.trip-main`);
 const siteTropControl = siteHeaderElement.querySelector(`.trip-controls`);
 const siteTripControlHeaderMenu = siteTropControl.querySelector(`h2:nth-child(1)`);
-const siteTripControlHeaderFilter = siteTropControl.querySelector(`h2:nth-child(2)`);
 
 render(siteTripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
 render(siteTropControl, new SiteMenuComponent(), RenderPosition.AFTER_END, siteTripControlHeaderMenu);
-render(siteTropControl, new SiteFilterComponent(), RenderPosition.AFTER_END, siteTripControlHeaderFilter);
 
 const mapController = new TripController(siteTripEventElement);
 mapController.render(points);
