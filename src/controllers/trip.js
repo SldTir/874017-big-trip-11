@@ -1,11 +1,10 @@
 import SiteSortComponent, {SortType} from "../components/site-sort.js";
-import SiteFormComponent from "../components/site-form.js";
-import PointComponent from "../components/point.js";
 import DayListComponent from "../components/day-list.js";
 import NoPointsComponent from "../components/no-points";
 import DayInfoComponent from "../components/day-info";
 import SiteFilterComponent from "../components/site-filter.js";
-import {render, replace, RenderPosition} from "../utils/render.js";
+import PointController from "../controllers/point";
+import {render, RenderPosition} from "../utils/render.js";
 
 const sitePageMainElement = document.querySelector(`.page-main`);
 const siteHeaderElement = document.querySelector(`.page-header`);
@@ -17,41 +16,7 @@ const renderDateInfo = (day, index) => {
   const dayInfoComponent = new DayInfoComponent(day, index);
   return dayInfoComponent;
 };
-const renderPoint = (tripEventList, point) => {
 
-  const replacePointToForm = () => {
-    replace(pointFormComponent, pointComponent);
-  };
-
-  const replaceFormToPoint = () => {
-    replace(pointComponent, pointFormComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const pointComponent = new PointComponent(point);
-  pointComponent.setClickHandler(() => {
-    replacePointToForm();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  const pointFormComponent = new SiteFormComponent(point);
-  pointFormComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceFormToPoint();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-
-  render(tripEventList, pointComponent, RenderPosition.BEFOREEND);
-};
 
 const getSortedPoints = (points, sortType) => {
   let sortedPoints = [];
@@ -86,7 +51,9 @@ const renderDays = (points) => {
     const tripEventList = dateInfo.getElement().querySelector(`.trip-events__list`);
 
     tripDayEvents.forEach((point) => {
-      renderPoint(tripEventList, point);
+      const pointController = new PointController(tripEventList);
+      pointController.render(point);
+      return pointController;
     });
 
     render(siteTripDays, dateInfo, RenderPosition.BEFOREEND);
@@ -97,16 +64,20 @@ export default class TripController {
   constructor(container) {
     this._container = container;
 
+    this._points = [];
     this._noPointsComponent = new NoPointsComponent();
     this._siteSortComponent = new SiteSortComponent();
     this._dayListComponent = new DayListComponent();
     this._siteFilterComponent = new SiteFilterComponent();
 
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._siteSortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   render(points) {
+    this._points = points;
     const container = this._container;
-    if (points.length === 0) {
+    if (this._points.length === 0) {
       render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
       return;
     }
@@ -117,25 +88,47 @@ export default class TripController {
 
     render(container, this._dayListComponent, RenderPosition.BEFOREEND);
 
-    renderDays(points);
+    renderDays(this._points);
+  }
 
-    this._siteSortComponent.setSortTypeChangeHandler((sortType) => {
-      const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
+  _onSortTypeChange(sortType) {
+    const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
 
-      siteTripDays.innerHTML = ``;
-      const sortedPoints = getSortedPoints(points, sortType);
-      if (sortType !== SortType.EVENT) {
-        const dayInfo = new DayInfoComponent();
-        render(siteTripDays, dayInfo, RenderPosition.BEFOREEND);
+    siteTripDays.innerHTML = ``;
+    const sortedPoints = getSortedPoints(this._points, sortType);
+    if (sortType !== SortType.EVENT) {
+      const dayInfo = new DayInfoComponent();
+      render(siteTripDays, dayInfo, RenderPosition.BEFOREEND);
 
-        const tripEventListSort = dayInfo.getElement().querySelector(`.trip-events__list`);
+      const tripEventListSort = dayInfo.getElement().querySelector(`.trip-events__list`);
 
-        sortedPoints.forEach((point) => {
-          renderPoint(tripEventListSort, point);
-        });
-      } else {
-        renderDays(points);
-      }
-    });
+      sortedPoints.forEach((point) => {
+        const pointController = new PointController(tripEventListSort);
+        pointController.render(point);
+        return pointController;
+      });
+    } else {
+      renderDays(this._points);
+    }
   }
 }
+
+
+// this._siteSortComponent.setSortTypeChangeHandler((sortType) => {
+//   const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
+
+//   siteTripDays.innerHTML = ``;
+//   const sortedPoints = getSortedPoints(points, sortType);
+//   if (sortType !== SortType.EVENT) {
+//     const dayInfo = new DayInfoComponent();
+//     render(siteTripDays, dayInfo, RenderPosition.BEFOREEND);
+
+//     const tripEventListSort = dayInfo.getElement().querySelector(`.trip-events__list`);
+
+//     sortedPoints.forEach((point) => {
+//       renderPoint(tripEventListSort, point);
+//     });
+//   } else {
+//     renderDays(points);
+//   }
+// });
