@@ -37,7 +37,7 @@ const getSortedPoints = (points, sortType) => {
   return sortedPoints;
 };
 
-const renderDays = (points) => {
+const renderDays = (points, onDataChange) => {
   const tripDays = [...new Set(points.slice().map((element) => new Date(element.startDate).toDateString()))];
 
   const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
@@ -52,7 +52,7 @@ const renderDays = (points) => {
     const tripEventList = dateInfo.getElement().querySelector(`.trip-events__list`);
 
     tripDayEvents.forEach((point) => {
-      const pointController = new PointController(tripEventList);
+      const pointController = new PointController(tripEventList, onDataChange);
       pointController.render(point);
       ControllersArray.push(pointController);
     });
@@ -72,6 +72,7 @@ export default class TripController {
     this._dayListComponent = new DayListComponent();
     this._siteFilterComponent = new SiteFilterComponent();
 
+    this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._siteSortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
@@ -90,7 +91,7 @@ export default class TripController {
 
     render(container, this._dayListComponent, RenderPosition.BEFOREEND);
 
-    const newDays = renderDays(this._points);
+    const newDays = renderDays(this._points, this._onDataChange);
     this._showedPointControllers = this._showedPointControllers.concat(newDays);
   }
 
@@ -111,28 +112,20 @@ export default class TripController {
         return pointController;
       });
     } else {
-      const newDays = renderDays(this._points);
+      const newDays = renderDays(this._points, this._onDataChange);
       this._showedPointControllers = newDays;
     }
   }
+
+  _onDataChange(pointController, oldData, newData) {
+    const index = this._points.findIndex((it) => it === oldData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._points = [].concat(this._points.slice(0, index), newData, this._points.slice(index + 1));
+
+    pointController.render(this._points[index]);
+  }
 }
-
-
-// this._siteSortComponent.setSortTypeChangeHandler((sortType) => {
-//   const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
-
-//   siteTripDays.innerHTML = ``;
-//   const sortedPoints = getSortedPoints(points, sortType);
-//   if (sortType !== SortType.EVENT) {
-//     const dayInfo = new DayInfoComponent();
-//     render(siteTripDays, dayInfo, RenderPosition.BEFOREEND);
-
-//     const tripEventListSort = dayInfo.getElement().querySelector(`.trip-events__list`);
-
-//     sortedPoints.forEach((point) => {
-//       renderPoint(tripEventListSort, point);
-//     });
-//   } else {
-//     renderDays(points);
-//   }
-// });

@@ -3,8 +3,9 @@ import SiteFormComponent from "../components/site-form.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
 export default class PointController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._pointComponent = null;
     this._siteFormComponent = null;
@@ -22,6 +23,12 @@ export default class PointController {
     this._siteFormComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       this._replaceFormToPoint();
+    });
+
+    this._siteFormComponent.setFavoritesButtonClickHandler(() => {
+      this._onDataChange(this, point, Object.assign({}, point, {
+        isFavorite: !point.favorite,
+      }));
     });
 
     render(this._container, this._pointComponent, RenderPosition.BEFOREEND);

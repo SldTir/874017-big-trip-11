@@ -128,6 +128,7 @@ const generatePoint = function () {
     endDate,
     price: getRandomNumberMinMax(100, 1000),
     timeDifference: difference(startDate, endDate),
+    favorite: false,
   }
   );
 };

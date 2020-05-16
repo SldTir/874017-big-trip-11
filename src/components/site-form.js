@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createImages = (images) => {
   return images.join(`\n`);
@@ -33,13 +33,24 @@ const formateDate = (date) => {
 };
 
 const createSiteForm = (point) => {
-  const {type, city, pretext, offers, descriptions, images, startDate, endDate, price} = point;
+  const {type, city, pretext, offers, descriptions, images, startDate, endDate, price, favorite} = point;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
   const startDateMarkup = formateDate(new Date(startDate));
   const endDateMarkup = formateDate(new Date(endDate));
   const typeLowerCase = type.toLowerCase();
+  const isCityFlag = city ? `<section class="event__section  event__section--destination">
+  <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+  <p class="event__destination-description">${descriptionMarkup}</p>
+
+  <div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${imagesMarkup}
+    </div>
+  </div>
+</section>` : ``;
+  const isFavorite = favorite ? `checked` : ``;
 
   return (
     `<header class="event__header">
@@ -145,7 +156,19 @@ const createSiteForm = (point) => {
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Cancel</button>
+    <button class="event__reset-btn" type="reset">Delete</button>
+
+    <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
+    <label class="event__favorite-btn" for="event-favorite-1">
+      <span class="visually-hidden">Add to favorite</span>
+      <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+        <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+      </svg>
+    </label>
+
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -154,17 +177,7 @@ const createSiteForm = (point) => {
         ${offersMarkup}
       </div>
     </section>
-
-    <section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${descriptionMarkup}</p>
-
-      <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${imagesMarkup}
-        </div>
-      </div>
-    </section>
+   ${isCityFlag}
   </section>`
   );
 };
@@ -179,18 +192,47 @@ const createSiteFormTemplate = (point) => {
   );
 };
 
-export default class SiteForm extends AbstractComponent {
+export default class SiteForm extends AbstractSmartComponent {
   constructor(point) {
     super();
     this._point = point;
     this._element = null;
+
+    this._submitHandler = null;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createSiteFormTemplate(this._point);
   }
 
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this.setFavoritesButtonClickHandler();
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+    this._submitHandler = handler;
+  }
+
+  setFavoritesButtonClickHandler() {
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, () => {
+      this._point.favorite = !this._point.favorite;
+    });
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+    element.querySelector(`.event__type-list`).addEventListener(`click`, (evt) => {
+      const eventTypeBtn = element.querySelector(`.event__type-btn`).querySelector(`img`).src;
+      const eventTarget = evt.target;
+      console.log(eventTypeBtn);
+    });
   }
 }
