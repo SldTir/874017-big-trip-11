@@ -31,6 +31,8 @@ export default class PointController {
       }));
     });
 
+    this._siteFormComponent.setEventTypeListClickHandler();
+
     render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
   }
 
@@ -51,38 +53,3 @@ export default class PointController {
     }
   }
 }
-
-// const renderPoint = (tripEventList, point) => {
-
-//   const replacePointToForm = () => {
-//     replace(pointFormComponent, pointComponent);
-//   };
-
-//   const replaceFormToPoint = () => {
-//     replace(pointComponent, pointFormComponent);
-//   };
-
-//   const onEscKeyDown = (evt) => {
-//     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-//     if (isEscKey) {
-//       replaceFormToPoint();
-//       document.removeEventListener(`keydown`, onEscKeyDown);
-//     }
-//   };
-
-//   const pointComponent = new PointComponent(point);
-//   pointComponent.setClickHandler(() => {
-//     replacePointToForm();
-//   });
-
-//   const pointFormComponent = new SiteFormComponent(point);
-//   pointFormComponent.setSubmitHandler((evt) => {
-//     evt.preventDefault();
-//     replaceFormToPoint();
-//     document.removeEventListener(`keydown`, onEscKeyDown);
-//   });
-
-
-//   render(tripEventList, pointComponent, RenderPosition.BEFOREEND);
-// };

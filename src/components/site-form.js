@@ -1,4 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import {choosesPretext} from "../mock/point.js";
 
 const createImages = (images) => {
   return images.join(`\n`);
@@ -9,7 +10,7 @@ const createDescriptions = (descriptions) => {
 };
 
 const createOffer = (offer, isChecked) => {
-  const {service, price, value} = offer;
+  const { service, price, value } = offer;
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${value}-1" type="checkbox" name="event-offer-${value}" ${isChecked ? `checked` : ``}>
@@ -199,7 +200,6 @@ export default class SiteForm extends AbstractSmartComponent {
     this._element = null;
 
     this._submitHandler = null;
-    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -209,7 +209,6 @@ export default class SiteForm extends AbstractSmartComponent {
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setFavoritesButtonClickHandler();
-    this._subscribeOnEvents();
   }
 
   rerender() {
@@ -227,12 +226,29 @@ export default class SiteForm extends AbstractSmartComponent {
     });
   }
 
-  _subscribeOnEvents() {
-    const element = this.getElement();
-    element.querySelector(`.event__type-list`).addEventListener(`click`, (evt) => {
-      const eventTypeBtn = element.querySelector(`.event__type-btn`).querySelector(`img`).src;
-      const eventTarget = evt.target;
-      console.log(eventTypeBtn);
+  setEventTypeListClickHandler() {
+    const eventTypeList = this.getElement().querySelector(`.event__type-list`);
+    const eventTypeInputChecked = eventTypeList.querySelector(`input[checked]`);
+    const eventTypeLabelChecked = eventTypeInputChecked.parentElement.querySelector(`label`);
+    const elementIcon = this.getElement().querySelector(`.event__type-icon`);
+    const elemetList = this.getElement().querySelectorAll(`.event__type-item`);
+    const elementEventTypeOutput = this.getElement().querySelector(`.event__type-output`);
+
+    elemetList.forEach((element) => {
+      const elementInput = element.querySelector(`input`);
+      elementInput.addEventListener(`click`, () => {
+        const elementInputValue = elementInput.getAttribute(`value`);
+        const elementInputValueUpperCase = `${elementInputValue[0].toUpperCase()}${elementInputValue.slice(1)}`;
+        const elementLabelClass = eventTypeLabelChecked.classList[1];
+        elementIcon.src = `img/icons/${elementInputValue}.png`;
+        elementEventTypeOutput.innerHTML = `${elementInputValueUpperCase} ${choosesPretext(elementInputValueUpperCase)}`;
+        eventTypeInputChecked.id = `event-type-${elementInputValueUpperCase}-1`;
+        eventTypeInputChecked.value = `${elementInputValueUpperCase}`;
+        eventTypeLabelChecked.setAttribute(`for`, `event-type-${elementInputValueUpperCase}-1`);
+        eventTypeLabelChecked.classList.remove(elementLabelClass);
+        eventTypeLabelChecked.classList.add(`event__type-label--${elementInputValueUpperCase}`);
+        eventTypeLabelChecked.innerHTML = `${elementInputValueUpperCase}`;
+      });
     });
   }
 }
