@@ -33,6 +33,8 @@ export default class PointController {
 
     this._siteFormComponent.setEventTypeListClickHandler();
 
+    this._siteFormComponent.setInputDestinationChangeHandler();
+
     render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
   }
 

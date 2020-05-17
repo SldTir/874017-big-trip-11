@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {choosesPretext} from "../mock/point.js";
+import {choosesPretext, generateRanodmArray, offers, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
 
 const createImages = (images) => {
   return images.join(`\n`);
@@ -222,7 +222,6 @@ export default class SiteForm extends AbstractSmartComponent {
 
   setFavoritesButtonClickHandler() {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, () => {
-      this._point.favorite = !this._point.favorite;
     });
   }
 
@@ -233,6 +232,7 @@ export default class SiteForm extends AbstractSmartComponent {
     const elementIcon = this.getElement().querySelector(`.event__type-icon`);
     const elemetList = this.getElement().querySelectorAll(`.event__type-item`);
     const elementEventTypeOutput = this.getElement().querySelector(`.event__type-output`);
+    const elementOffers = this.getElement().querySelector(`.event__available-offers`);
 
     elemetList.forEach((element) => {
       const elementInput = element.querySelector(`input`);
@@ -248,7 +248,26 @@ export default class SiteForm extends AbstractSmartComponent {
         eventTypeLabelChecked.classList.remove(elementLabelClass);
         eventTypeLabelChecked.classList.add(`event__type-label--${elementInputValueUpperCase}`);
         eventTypeLabelChecked.innerHTML = `${elementInputValueUpperCase}`;
+
+        const randomOffers = generateRanodmArray(offers);
+        const randomOffersMarkup = randomOffers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
+        elementOffers.innerHTML = ``;
+        elementOffers.insertAdjacentHTML(`afterBegin`, randomOffersMarkup);
       });
+    });
+  }
+
+  setInputDestinationChangeHandler() {
+    const inputDestination = this.getElement().querySelector(`.event__input--destination`);
+    const eventDestinationDescription = this.getElement().querySelector(`.event__destination-description`);
+    const eventPhotosTape = this.getElement().querySelector(`.event__photos-tape`);
+    inputDestination.addEventListener(`change`, () => {
+      const randomDescription = createDescriptions(generateRandomDescription());
+      const randomImages = createImages(generateRanodmImagas());
+      eventDestinationDescription.innerHTML = ``;
+      eventDestinationDescription.insertAdjacentHTML(`afterBegin`, randomDescription);
+      eventPhotosTape.innerHTML = ``;
+      eventPhotosTape.insertAdjacentHTML(`afterBegin`, randomImages);
     });
   }
 }

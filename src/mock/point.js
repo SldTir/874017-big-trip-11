@@ -139,4 +139,4 @@ const generatePoints = (count) => {
   .map(generatePoint);
 };
 
-export {generatePoints, choosesPretext, generateRanodmArray, offers};
+export {generatePoints, choosesPretext, generateRanodmArray, offers, generateRandomDescription, generateRanodmImagas};
