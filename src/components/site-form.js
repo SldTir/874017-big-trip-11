@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {choosesPretext, generateRanodmArray, offers, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
+import {choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
 
 const createImages = (images) => {
   return images.join(`\n`);
@@ -10,7 +10,7 @@ const createDescriptions = (descriptions) => {
 };
 
 const createOffer = (offer, isChecked) => {
-  const { service, price, value } = offer;
+  const {service, price, value} = offer;
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${value}-1" type="checkbox" name="event-offer-${value}" ${isChecked ? `checked` : ``}>
@@ -52,7 +52,6 @@ const createSiteForm = (point) => {
   </div>
 </section>` : ``;
   const isFavorite = favorite ? `checked` : ``;
-
   return (
     `<header class="event__header">
     <div class="event__type-wrapper">
@@ -200,6 +199,9 @@ export default class SiteForm extends AbstractSmartComponent {
     this._element = null;
 
     this._submitHandler = null;
+    this._clickHandler = null;
+    this.setEventTypeListClickHandler();
+    this.setInputDestinationChangeHandler();
   }
 
   getTemplate() {
@@ -208,7 +210,9 @@ export default class SiteForm extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
-    this.setFavoritesButtonClickHandler();
+    this.setFavoritesButtonClickHandler(this._clickHandler);
+    this.setEventTypeListClickHandler();
+    this.setInputDestinationChangeHandler();
   }
 
   rerender() {
@@ -220,11 +224,10 @@ export default class SiteForm extends AbstractSmartComponent {
     this._submitHandler = handler;
   }
 
-  setFavoritesButtonClickHandler() {
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, () => {
-    });
+  setFavoritesButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
+    this._clickHandler = handler;
   }
-
   setEventTypeListClickHandler() {
     const eventTypeList = this.getElement().querySelector(`.event__type-list`);
     const eventTypeInputChecked = eventTypeList.querySelector(`input[checked]`);
@@ -249,7 +252,7 @@ export default class SiteForm extends AbstractSmartComponent {
         eventTypeLabelChecked.classList.add(`event__type-label--${elementInputValueUpperCase}`);
         eventTypeLabelChecked.innerHTML = `${elementInputValueUpperCase}`;
 
-        const randomOffers = generateRanodmArray(offers);
+        const randomOffers = generateRanodmArray(offersArray);
         const randomOffersMarkup = randomOffers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
         elementOffers.innerHTML = ``;
         elementOffers.insertAdjacentHTML(`afterBegin`, randomOffersMarkup);
