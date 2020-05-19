@@ -101,6 +101,7 @@ export default class TripController {
   }
 
   _onSortTypeChange(sortType) {
+    const ControllersSortArray = [];
     const siteTripDays = sitePageMainElement.querySelector(`.trip-days`);
 
     siteTripDays.innerHTML = ``;
@@ -112,10 +113,11 @@ export default class TripController {
       const tripEventListSort = dayInfo.getElement().querySelector(`.trip-events__list`);
 
       sortedPoints.forEach((point) => {
-        const pointController = new PointController(tripEventListSort);
+        const pointController = new PointController(tripEventListSort, this._onDataChange, this._onViewChange);
         pointController.render(point);
-        return pointController;
+        ControllersSortArray.push(pointController);
       });
+      this._showedPointControllers = ControllersSortArray;
     } else {
       const newDays = renderDays(this._points, this._onDataChange, this._onViewChange);
       this._showedPointControllers = newDays;
