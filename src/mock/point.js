@@ -5,7 +5,7 @@ const COMPENSATOR = 1;
 const NUMBER_IMAGE = 5;
 const types = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 const citys = [`Almaty`, `Bandung`, `Havana`, `Astana`, `Bucharest`, `Jerusalem`, `Gwangju`, `Liverpool`, `Mexico`, `Osaka`];
-const offers = [{
+const offersArray = [{
   service: `Add luggage`,
   price: `30`,
   value: `luggage`,
@@ -121,13 +121,14 @@ const generatePoint = function () {
     type,
     city: getRandomArrayItem(citys),
     pretext: choosesPretext(type),
-    offers: generateRanodmArray(offers),
+    offers: generateRanodmArray(offersArray),
     descriptions: generateRandomDescription(),
     images: generateRanodmImagas(),
     startDate,
     endDate,
     price: getRandomNumberMinMax(100, 1000),
     timeDifference: difference(startDate, endDate),
+    favorite: false,
   }
   );
 };
@@ -138,4 +139,4 @@ const generatePoints = (count) => {
   .map(generatePoint);
 };
 
-export {generatePoints};
+export {generatePoints, choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas};
