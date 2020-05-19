@@ -33,8 +33,9 @@ const formateDate = (date) => {
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
-const createSiteForm = (point) => {
-  const {type, city, pretext, offers, descriptions, images, startDate, endDate, price, favorite} = point;
+const createSiteForm = (point, options) => {
+  const {startDate, endDate, price, favorite} = point;
+  const {type, city, pretext, offers, descriptions, images} = options;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
@@ -93,11 +94,6 @@ const createSiteForm = (point) => {
           <div class="event__type-item">
             <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
             <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" checked>
-            <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
           </div>
         </fieldset>
 
@@ -181,9 +177,9 @@ const createSiteForm = (point) => {
   </section>`
   );
 };
-const createSiteFormTemplate = (point) => {
+const createSiteFormTemplate = (point, options) => {
 
-  const siteForm = createSiteForm(point);
+  const siteForm = createSiteForm(point, options);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -199,20 +195,25 @@ export default class SiteForm extends AbstractSmartComponent {
     this._element = null;
 
     this._submitHandler = null;
-    this._clickHandler = null;
-    this.setEventTypeListClickHandler();
-    this.setInputDestinationChangeHandler();
+    this._clickFavoriteHandler = null;
+    this._type = point.type;
+    this.getTemplate = this.getTemplate.bind(this);
+    this._city = point.city;
+    this._pretext = point.pretext;
+    this._offers = point.offers;
+    this._descriptions = point.descriptions;
+    this._images = point.images;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createSiteFormTemplate(this._point);
+    return createSiteFormTemplate(this._point, {type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images});
   }
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
-    this.setFavoritesButtonClickHandler(this._clickHandler);
-    this.setEventTypeListClickHandler();
-    this.setInputDestinationChangeHandler();
+    this.setFavoritesButtonClickHandler(this._clickFavoriteHandler);
+    this._subscribeOnEvents();
   }
 
   rerender() {
@@ -226,51 +227,26 @@ export default class SiteForm extends AbstractSmartComponent {
 
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
-    this._clickHandler = handler;
+    this._clickFavoriteHandler = handler;
   }
-  setEventTypeListClickHandler() {
-    const eventTypeList = this.getElement().querySelector(`.event__type-list`);
-    const eventTypeInputChecked = eventTypeList.querySelector(`input[checked]`);
-    const eventTypeLabelChecked = eventTypeInputChecked.parentElement.querySelector(`label`);
-    const elementIcon = this.getElement().querySelector(`.event__type-icon`);
-    const elemetList = this.getElement().querySelectorAll(`.event__type-item`);
-    const elementEventTypeOutput = this.getElement().querySelector(`.event__type-output`);
-    const elementOffers = this.getElement().querySelector(`.event__available-offers`);
-
+  _subscribeOnEvents() {
+    const elemetList = this.getElement().querySelectorAll(`.event__type-input`);
     elemetList.forEach((element) => {
-      const elementInput = element.querySelector(`input`);
-      elementInput.addEventListener(`click`, () => {
-        const elementInputValue = elementInput.getAttribute(`value`);
-        const elementInputValueUpperCase = `${elementInputValue[0].toUpperCase()}${elementInputValue.slice(1)}`;
-        const elementLabelClass = eventTypeLabelChecked.classList[1];
-        elementIcon.src = `img/icons/${elementInputValue}.png`;
-        elementEventTypeOutput.innerHTML = `${elementInputValueUpperCase} ${choosesPretext(elementInputValueUpperCase)}`;
-        eventTypeInputChecked.id = `event-type-${elementInputValueUpperCase}-1`;
-        eventTypeInputChecked.value = `${elementInputValueUpperCase}`;
-        eventTypeLabelChecked.setAttribute(`for`, `event-type-${elementInputValueUpperCase}-1`);
-        eventTypeLabelChecked.classList.remove(elementLabelClass);
-        eventTypeLabelChecked.classList.add(`event__type-label--${elementInputValueUpperCase}`);
-        eventTypeLabelChecked.innerHTML = `${elementInputValueUpperCase}`;
-
-        const randomOffers = generateRanodmArray(offersArray);
-        const randomOffersMarkup = randomOffers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
-        elementOffers.innerHTML = ``;
-        elementOffers.insertAdjacentHTML(`afterBegin`, randomOffersMarkup);
+      element.addEventListener(`click`, (evt) => {
+        const elementInputValueUpperCase = `${evt.target.value[0].toUpperCase()}${evt.target.value.slice(1)}`;
+        this._type = elementInputValueUpperCase;
+        this._pretext = choosesPretext(elementInputValueUpperCase);
+        this._offers = generateRanodmArray(offersArray);
+        this.rerender();
       });
     });
-  }
 
-  setInputDestinationChangeHandler() {
     const inputDestination = this.getElement().querySelector(`.event__input--destination`);
-    const eventDestinationDescription = this.getElement().querySelector(`.event__destination-description`);
-    const eventPhotosTape = this.getElement().querySelector(`.event__photos-tape`);
-    inputDestination.addEventListener(`change`, () => {
-      const randomDescription = createDescriptions(generateRandomDescription());
-      const randomImages = createImages(generateRanodmImagas());
-      eventDestinationDescription.innerHTML = ``;
-      eventDestinationDescription.insertAdjacentHTML(`afterBegin`, randomDescription);
-      eventPhotosTape.innerHTML = ``;
-      eventPhotosTape.insertAdjacentHTML(`afterBegin`, randomImages);
+    inputDestination.addEventListener(`change`, (evt) => {
+      this._city = evt.target.value;
+      this._descriptions = generateRandomDescription();
+      this._images = generateRanodmImagas();
+      this.rerender();
     });
   }
 }

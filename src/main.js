@@ -22,3 +22,4 @@ render(siteTropControl, new SiteMenuComponent(), RenderPosition.AFTER_END, siteT
 
 const mapController = new TripController(siteTripEventElement);
 mapController.render(points);
+
