@@ -1,5 +1,9 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
+import {formatDate} from "../utils/common.js";
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const createImages = (images) => {
   return images.join(`\n`);
@@ -23,24 +27,14 @@ const createOffer = (offer, isChecked) => {
   );
 };
 
-const formateDate = (date) => {
-  const day = date.getDate().toString().padStart(2, `0`);
-  const month = (date.getMonth() + 1).toString().padStart(2, `0`);
-  const year = String(date.getFullYear()).slice(2);
-  const hours = date.getHours().toString().padStart(2, `0`);
-  const minutes = date.getMinutes().toString().padStart(2, `0`);
-
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
-};
-
 const createSiteForm = (point, options) => {
-  const {startDate, endDate, price, favorite} = point;
-  const {type, city, pretext, offers, descriptions, images} = options;
+  const {price, favorite} = point;
+  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = options;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
-  const startDateMarkup = formateDate(new Date(startDate));
-  const endDateMarkup = formateDate(new Date(endDate));
+  const startDateMarkup = formatDate(startDate);
+  const endDateMarkup = formatDate(endDate);
   const typeLowerCase = type.toLowerCase();
   const isCityFlag = city ? `<section class="event__section  event__section--destination">
   <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -194,6 +188,7 @@ export default class SiteForm extends AbstractSmartComponent {
     this._point = point;
     this._element = null;
 
+    this._flatpickr = null;
     this._submitHandler = null;
     this._clickFavoriteHandler = null;
     this._type = point.type;
@@ -203,11 +198,15 @@ export default class SiteForm extends AbstractSmartComponent {
     this._offers = point.offers;
     this._descriptions = point.descriptions;
     this._images = point.images;
+    this._startDate = point.startDate;
+    this._endDate = point.endDate;
+
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createSiteFormTemplate(this._point, {type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images});
+    return createSiteFormTemplate(this._point, {type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate});
   }
 
   recoveryListeners() {
@@ -218,6 +217,8 @@ export default class SiteForm extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+
+    this._applyFlatpickr();
   }
 
   setSubmitHandler(handler) {
@@ -229,6 +230,28 @@ export default class SiteForm extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
     this._clickFavoriteHandler = handler;
   }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const dateStart = this.getElement().querySelector(`#event-start-time-1`);
+    this._flatpickr = flatpickr(dateStart, {
+      dateFormat: `d/m/y H:i`,
+      enableTime: true,
+      defaultDate: this._startDate,
+    });
+
+    const dateEnd = this.getElement().querySelector(`#event-end-time-1`);
+    this._flatpickr = flatpickr(dateEnd, {
+      dateFormat: `d/m/y H:i`,
+      enableTime: true,
+      defaultDate: this._endDate,
+    });
+  }
+
   _subscribeOnEvents() {
     const elemetList = this.getElement().querySelectorAll(`.event__type-input`);
     elemetList.forEach((element) => {
