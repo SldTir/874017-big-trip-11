@@ -1,12 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
-
-const msDay = 86400000;
-const msHours = 3600000;
-const msMinutes = 60000;
-const filtersBusValues = (value, unit) => {
-  const filteredValue = value ? `${value}${unit}` : ``;
-  return filteredValue;
-};
+import {formatDate, dateDifference} from "../utils/common.js";
 
 const createOffersMarkup = (offers) => {
   const offersMarkup = offers.slice(0, 2).map((offer) => {
@@ -20,19 +13,12 @@ const createOffersMarkup = (offers) => {
   return offersMarkup;
 };
 
-const createTimeDifference = (timeDifference) => {
-  const letTime = timeDifference;
-  const date = Math.trunc(letTime / msDay);
-  const hours = Math.trunc((letTime - date * msDay) / msHours);
-  const minutes = Math.trunc((letTime - (date * msDay) - (hours * msHours)) / msMinutes);
-  return `${filtersBusValues(date, `D`)} ${filtersBusValues(hours, `H`)} ${filtersBusValues(minutes, `M`)}`;
-};
-
-const createPoint = (point) => {
-  const {type, city, pretext, offers, startDate, endDate, price, timeDifference} = point;
-  const startTime = new Date(startDate).getHours() + `:` + new Date(startDate).getMinutes();
-  const endTime = new Date(endDate).getHours() + `:` + new Date(endDate).getMinutes();
-  const differenceMarkup = createTimeDifference(timeDifference);
+const createPoint = (point, options) => {
+  const {type, city, pretext, offers, price} = point;
+  const {startDate, endDate} = options;
+  const startTime = formatDate(startDate);
+  const endTime = formatDate(endDate);
+  const differenceMarkup = dateDifference(startDate, endDate);
   const offersMarkup = createOffersMarkup(offers);
   const typeLowerCase = type.toLowerCase();
   return (
@@ -73,10 +59,12 @@ export default class Point extends AbstractComponent {
     super();
     this._point = point;
     this._element = null;
+    this._startDate = point.startDate;
+    this._endDate = point.endDate;
   }
 
   getTemplate() {
-    return createPoint(this._point);
+    return createPoint(this._point, {startDate: this._startDate, endDate: this._endDate});
   }
 
   setClickHandler(handler) {

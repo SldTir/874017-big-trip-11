@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length);
 
@@ -20,4 +22,22 @@ const getRandomNumberMinMax = (min, max) => {
   return Math.ceil(Math.random() * (max - min)) + min;
 };
 
-export {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax};
+const formatDate = (date) => {
+  return moment(date).format(`h:mm`);
+};
+
+const filtersBusValues = (value, unit) => {
+  const filteredValue = value ? `${value}${unit}` : ``;
+  return filteredValue;
+};
+
+const dateDifference = (startDate, endDate) => {
+  const daysDifference = moment.duration(endDate - startDate).days();
+  const hourDifference = moment.duration(endDate - startDate).hours();
+  const minuteDifference = moment.duration(endDate - startDate).minutes();
+
+  return `${filtersBusValues(daysDifference, `D`)} ${filtersBusValues(hourDifference, `H`)} ${filtersBusValues(minuteDifference, `M`)}`;
+};
+
+export {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax, formatDate, dateDifference};
+
