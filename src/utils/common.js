@@ -32,11 +32,10 @@ const filtersBusValues = (value, unit) => {
 };
 
 const dateDifference = (startDate, endDate) => {
-  const dateB = moment(endDate);
-  const dateC = moment(startDate);
-  const daysDifference = dateB.diff(dateC, `days`);
-  const hourDifference = Math.floor(dateB.diff(dateC, `hour`) % 24);
-  const minuteDifference = Math.floor(dateB.diff(dateC, `minute`) % 60);
+  const daysDifference = moment.duration(endDate - startDate).days();
+  const hourDifference = moment.duration(endDate - startDate).hours();
+  const minuteDifference = moment.duration(endDate - startDate).minutes();
+
   return `${filtersBusValues(daysDifference, `D`)} ${filtersBusValues(hourDifference, `H`)} ${filtersBusValues(minuteDifference, `M`)}`;
 };
 
