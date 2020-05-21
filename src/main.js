@@ -1,12 +1,15 @@
 import RouteInformationComponent from "./components/route-information.js";
 import SiteMenuComponent from "./components/site-menu.js";
 import TripController from "./controllers/trip.js";
+import PointsModel from "./models/points.js";
 import {generatePoints} from "./mock/point.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const COUNT_POINT = 15;
 
 const points = generatePoints(COUNT_POINT).sort((a, b) => a.startDate - b.startDate);
+const pointsModel = new PointsModel();
+pointsModel.setPoints(points);
 
 
 const sitePageMainElement = document.querySelector(`.page-main`);
@@ -20,6 +23,6 @@ const siteTripControlHeaderMenu = siteTropControl.querySelector(`h2:nth-child(1)
 render(siteTripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
 render(siteTropControl, new SiteMenuComponent(), RenderPosition.AFTER_END, siteTripControlHeaderMenu);
 
-const mapController = new TripController(siteTripEventElement);
+const mapController = new TripController(siteTripEventElement, pointsModel);
 mapController.render(points);
 

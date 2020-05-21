@@ -118,6 +118,7 @@ const generatePoint = function () {
 
   const type = getRandomArrayItem(types);
   return ({
+    id: String(new Date() + Math.random()),
     type,
     city: getRandomArrayItem(citys),
     pretext: choosesPretext(type),
