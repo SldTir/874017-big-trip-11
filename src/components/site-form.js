@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
-import {formatDate} from "../utils/common.js";
+import { choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas } from "../mock/point.js";
+import { formatDate } from "../utils/common.js";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -14,7 +14,7 @@ const createDescriptions = (descriptions) => {
 };
 
 const createOffer = (offer, isChecked) => {
-  const {service, price, value} = offer;
+  const { service, price, value } = offer;
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${value}-1" type="checkbox" name="event-offer-${value}" ${isChecked ? `checked` : ``}>
@@ -28,8 +28,8 @@ const createOffer = (offer, isChecked) => {
 };
 
 const createSiteForm = (point, options) => {
-  const {price, favorite} = point;
-  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = options;
+  const { price, favorite } = point;
+  const { type, city, pretext, offers, descriptions, images, startDate, endDate } = options;
   const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
@@ -182,6 +182,17 @@ const createSiteFormTemplate = (point, options) => {
   );
 };
 
+const parseFormData = (formData) => {
+  return {
+    type: formData.get(`event-type-toggle-1`),
+    city: formData.get(`event-destination`),
+    descriptions: formData.get(`event__destination-description`),
+    startDate: formData.get(`event-start-time`),
+    endDate: formData.get(`event-end-time`),
+    price: formData.get(`event-price`),
+  }
+};
+
 export default class SiteForm extends AbstractSmartComponent {
   constructor(point) {
     super();
@@ -190,6 +201,7 @@ export default class SiteForm extends AbstractSmartComponent {
 
     this._flatpickr = null;
     this._submitHandler = null;
+    this._deleteButtonClickHandler = null;
     this._clickFavoriteHandler = null;
     this._type = point.type;
     this.getTemplate = this.getTemplate.bind(this);
@@ -206,11 +218,21 @@ export default class SiteForm extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createSiteFormTemplate(this._point, {type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate});
+    return createSiteFormTemplate(this._point, { type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate });
+  }
+
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
   }
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this.setFavoritesButtonClickHandler(this._clickFavoriteHandler);
     this._subscribeOnEvents();
   }
@@ -221,6 +243,13 @@ export default class SiteForm extends AbstractSmartComponent {
     this._applyFlatpickr();
   }
 
+  getData() {
+    const form = this.getElement().querySelector(`.event--edit`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
     this._submitHandler = handler;
@@ -229,6 +258,13 @@ export default class SiteForm extends AbstractSmartComponent {
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
     this._clickFavoriteHandler = handler;
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
   }
 
   _applyFlatpickr() {
