@@ -1,4 +1,4 @@
-import {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax} from "../utils/common.js";
+import {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax, getRandomBoolean} from "../utils/common.js";
 
 const NUMBER_OFFERS = 5;
 const COMPENSATOR = 1;
@@ -9,23 +9,27 @@ const offersArray = [{
   service: `Add luggage`,
   price: `30`,
   value: `luggage`,
+  isChecked: getRandomBoolean(),
 }, {
   service: `Switch to comfort class`,
   price: `100`,
   value: `comfort`,
+  isChecked: getRandomBoolean(),
 }, {
   service: `Add meal`,
   price: `15`,
   value: `meal`,
-
+  isChecked: getRandomBoolean(),
 }, {
   service: `Choose seats`,
   price: `5`,
   value: `seats`,
+  isChecked: getRandomBoolean(),
 }, {
   service: `Travel by train`,
   price: `40`,
   value: `train`,
+  isChecked: getRandomBoolean(),
 }];
 
 const descriptions = [

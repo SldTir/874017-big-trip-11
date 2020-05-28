@@ -39,5 +39,16 @@ const dateDifference = (startDate, endDate) => {
   return `${filtersBusValues(daysDifference, `D`)} ${filtersBusValues(hourDifference, `H`)} ${filtersBusValues(minuteDifference, `M`)}`;
 };
 
-export {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax, formatDate, dateDifference};
+const convertsDateMilliseconds = (date) => {
+  const dateMilliseconds = moment(date, `DD/MM/YY HH:mm`).valueOf();
+  return dateMilliseconds;
+};
+
+const getRandomBoolean = () => {
+  return (Math.floor(Math.random() * 2) === 0);
+};
+
+console.log(getRandomBoolean());
+
+export {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax, formatDate, dateDifference, convertsDateMilliseconds, getRandomBoolean};
 

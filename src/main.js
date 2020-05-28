@@ -1,11 +1,11 @@
 import RouteInformationComponent from "./components/route-information.js";
-import SiteMenuComponent, {MenuItem} from "./components/site-menu.js";
+import SiteMenuComponent, { MenuItem } from "./components/site-menu.js";
 import TripController from "./controllers/trip.js";
 import PointsModel from "./models/points.js";
 import FilterController from "./controllers/filter.js";
 import ButtonAddEventController from "./components/add-event.js";
-import {generatePoints} from "./mock/point.js";
-import {render, RenderPosition} from "./utils/render.js";
+import { generatePoints } from "./mock/point.js";
+import { render, RenderPosition } from "./utils/render.js";
 
 const COUNT_POINT = 15;
 
@@ -37,11 +37,8 @@ render(siteTripMain, buttonAddEventComponent, RenderPosition.BEFOREEND);
 const mapController = new TripController(siteTripEventElement, pointsModel);
 mapController.render(points);
 
-buttonAddEventComponent.setOnChange((menuItem) => {
-  switch (menuItem) {
-    case MenuItem.NEW_TASK:
-      siteMenuComponent.setActiveItem(MenuItem.POINTS);
-      mapController.createTask();
-      break;
-  }
+buttonAddEventComponent.setOnChange(() => {
+  // buttonAddEventComponent.setActiveItem(MenuItem.NEW_EVENT);
+  mapController.createPoint();
+
 });

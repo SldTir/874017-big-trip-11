@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import { choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas } from "../mock/point.js";
-import { formatDate } from "../utils/common.js";
+import {choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
+import {formatDate, convertsDateMilliseconds} from "../utils/common.js";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -13,8 +13,8 @@ const createDescriptions = (descriptions) => {
   return descriptions.join(` `);
 };
 
-const createOffer = (offer, isChecked) => {
-  const { service, price, value } = offer;
+const createOffer = (offer) => {
+  const { service, price, value, isChecked} = offer;
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${value}-1" type="checkbox" name="event-offer-${value}" ${isChecked ? `checked` : ``}>
@@ -30,7 +30,7 @@ const createOffer = (offer, isChecked) => {
 const createSiteForm = (point, options) => {
   const { price, favorite } = point;
   const { type, city, pretext, offers, descriptions, images, startDate, endDate } = options;
-  const offersMarkup = offers.map((offer, index) => createOffer(offer, index <= 1)).join(`\n`);
+  const offersMarkup = offers.map((offer) => createOffer(offer)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
   const startDateMarkup = formatDate(startDate);
@@ -113,9 +113,7 @@ const createSiteForm = (point, options) => {
     </div>
 
     <div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="event-destination-1">
-        ${type} ${pretext}
-      </label>
+      <label class="event__label  event__type-output" for="event-destination-1">${type} ${pretext}</label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
       <datalist id="destination-list-1">
         <option value="Amsterdam"></option>
@@ -182,14 +180,47 @@ const createSiteFormTemplate = (point, options) => {
   );
 };
 
-const parseFormData = (formData) => {
+const searchInputsOffers = () => {
+  const offers = [];
+  const container = document.querySelector(`.event__available-offers`);
+  const inputs = container.querySelectorAll(`input`);
+  inputs.forEach((input) => {
+    const label = input.parentElement.querySelector(`label`);
+    const serviceLabel = label.querySelector(`.event__offer-title`).textContent;
+    const priceLabel = label.querySelector(`.event__offer-price`).textContent;
+    const inputName = input.getAttribute(`name`);
+    const inputValue = inputName.split(`-`).slice(2);
+    const inputChecked = input.checked;
+
+    return offers.push({
+      service: serviceLabel,
+      price: priceLabel,
+      value: `${inputValue}`,
+      isChecked: inputChecked,
+    });
+  });
+  return offers;
+};
+
+const parseFormData = (formData, type, pretext, images, descriptions) => {
+  debugger;
+  const favorite = document.querySelector(`.event__favorite-checkbox`).checked;
+  const startDate = convertsDateMilliseconds(formData.get(`event-start-time`));
+  const endDate = convertsDateMilliseconds(formData.get(`event-end-time`));
+  const timeDifference = endDate - startDate;
+  const offers = searchInputsOffers();
   return {
-    type: formData.get(`event-type-toggle-1`),
+    type,
     city: formData.get(`event-destination`),
-    descriptions: formData.get(`event__destination-description`),
-    startDate: formData.get(`event-start-time`),
-    endDate: formData.get(`event-end-time`),
+    pretext,
+    offers,
+    descriptions,
+    images,
+    startDate,
+    endDate,
     price: formData.get(`event-price`),
+    timeDifference,
+    favorite,
   }
 };
 
@@ -244,10 +275,10 @@ export default class SiteForm extends AbstractSmartComponent {
   }
 
   getData() {
-    const form = this.getElement().querySelector(`.event--edit`);
+    const form = this.getElement();
     const formData = new FormData(form);
 
-    return parseFormData(formData);
+    return parseFormData(formData, this._type, this._pretext, this._images, this._descriptions);
   }
 
   setSubmitHandler(handler) {
@@ -274,17 +305,32 @@ export default class SiteForm extends AbstractSmartComponent {
     }
 
     const dateStart = this.getElement().querySelector(`#event-start-time-1`);
+    const dateEnd = this.getElement().querySelector(`#event-end-time-1`);
+    let minDate1 = this._startDate;
+    let maxDate1 = this._endDate;
+
+    dateStart.addEventListener(`onChange`, function () {
+      minDate1 = dateStart.value;
+      return minDate1;
+    });
+
+    dateEnd.addEventListener(`onChange`, function () {
+      maxDate1 = dateEnd.value;
+      return maxDate1;
+    });
+
     this._flatpickr = flatpickr(dateStart, {
       dateFormat: `d/m/y H:i`,
       enableTime: true,
       defaultDate: this._startDate,
+      maxDate: maxDate1,
     });
 
-    const dateEnd = this.getElement().querySelector(`#event-end-time-1`);
     this._flatpickr = flatpickr(dateEnd, {
       dateFormat: `d/m/y H:i`,
       enableTime: true,
       defaultDate: this._endDate,
+      minDate: minDate1,
     });
   }
 

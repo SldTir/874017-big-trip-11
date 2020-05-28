@@ -1,5 +1,6 @@
 import SiteSortComponent, { SortType } from "../components/site-sort.js";
 import DayListComponent from "../components/day-list.js";
+import PointComponent from "../components/point.js";
 import NoPointsComponent from "../components/no-points";
 import DayInfoComponent from "../components/day-info";
 import PointController, { Mode as PointControllerMode, EmptyTask } from "../controllers/point";
@@ -99,8 +100,7 @@ export default class TripController {
     if (this._createPoint) {
       return;
     }
-
-    const pointListElement = this._pointsComponent.getElement();
+    const pointListElement = pointsComponent.getElement();
     this._creatingPoint = new PointController(pointListElement, this._onDataChange, this._onViewChange);
     this._creatingPoint.render(EmptyTask, PointControllerMode.ADDING);
   }
@@ -163,10 +163,10 @@ export default class TripController {
         this._showedPointControllers = this._showedPointControllers.length;
       }
     } else if (newData === null) {
-      this._pointsModel.removeTask(oldData.id);
+      this._pointsModel.removePoint(oldData.id);
       this._updatePoints();
     } else {
-      const isSuccess = this._pointsModel.updateTask(oldData.id, newData);
+      const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
       if (isSuccess) {
         pointController.render(newData);
       }
