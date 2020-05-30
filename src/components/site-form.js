@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
-import {formatDate, convertsDateMilliseconds} from "../utils/common.js";
+import { choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas } from "../mock/point.js";
+import { formatDate, convertsDateMilliseconds } from "../utils/common.js";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -14,7 +14,7 @@ const createDescriptions = (descriptions) => {
 };
 
 const createOffer = (offer) => {
-  const { service, price, value, isChecked} = offer;
+  const { service, price, value, isChecked } = offer;
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${value}-1" type="checkbox" name="event-offer-${value}" ${isChecked ? `checked` : ``}>
@@ -27,7 +27,7 @@ const createOffer = (offer) => {
   );
 };
 
-const createSiteForm = (point, options) => {
+const createSiteForm = (point, options, mode) => {
   const { price, favorite } = point;
   const { type, city, pretext, offers, descriptions, images, startDate, endDate } = options;
   const offersMarkup = offers.map((offer) => createOffer(offer)).join(`\n`);
@@ -47,6 +47,20 @@ const createSiteForm = (point, options) => {
   </div>
 </section>` : ``;
   const isFavorite = favorite ? `checked` : ``;
+  const modSwitch = mode === `adding` ? `<button class="event__reset-btn" type="reset">Cancel</button>` : `<button class="event__reset-btn" type="reset">Delete</button>
+  <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
+  <label class="event__favorite-btn" for="event-favorite-1">
+    <span class="visually-hidden">Add to favorite</span>
+    <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+      <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+    </svg>
+  </label>
+
+  <button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`;
+
+
   return (
     `<header class="event__header">
     <div class="event__type-wrapper">
@@ -89,6 +103,10 @@ const createSiteForm = (point, options) => {
             <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
             <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
           </div>
+          <div class="event__type-item">
+          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
+        </div>
         </fieldset>
 
         <fieldset class="event__type-group">
@@ -144,19 +162,7 @@ const createSiteForm = (point, options) => {
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
-
-    <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
-    <label class="event__favorite-btn" for="event-favorite-1">
-      <span class="visually-hidden">Add to favorite</span>
-      <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-        <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
-      </svg>
-    </label>
-
-    <button class="event__rollup-btn" type="button">
-      <span class="visually-hidden">Open event</span>
-    </button>
+    ${modSwitch}
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -169,9 +175,9 @@ const createSiteForm = (point, options) => {
   </section>`
   );
 };
-const createSiteFormTemplate = (point, options) => {
+const createSiteFormTemplate = (point, options, mode) => {
 
-  const siteForm = createSiteForm(point, options);
+  const siteForm = createSiteForm(point, options, mode);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -203,7 +209,6 @@ const searchInputsOffers = () => {
 };
 
 const parseFormData = (formData, type, pretext, images, descriptions) => {
-  debugger;
   const favorite = document.querySelector(`.event__favorite-checkbox`).checked;
   const startDate = convertsDateMilliseconds(formData.get(`event-start-time`));
   const endDate = convertsDateMilliseconds(formData.get(`event-end-time`));
@@ -225,11 +230,11 @@ const parseFormData = (formData, type, pretext, images, descriptions) => {
 };
 
 export default class SiteForm extends AbstractSmartComponent {
-  constructor(point) {
+  constructor(point, mode) {
     super();
     this._point = point;
     this._element = null;
-
+    this._mode = mode;
     this._flatpickr = null;
     this._submitHandler = null;
     this._deleteButtonClickHandler = null;
@@ -249,7 +254,7 @@ export default class SiteForm extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createSiteFormTemplate(this._point, { type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate });
+    return createSiteFormTemplate(this._point, { type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate }, this._mode);
   }
 
   removeElement() {
@@ -287,9 +292,12 @@ export default class SiteForm extends AbstractSmartComponent {
   }
 
   setFavoritesButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
-    this._clickFavoriteHandler = handler;
+    if (this._mode !== `adding`) {
+      this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
+      this._clickFavoriteHandler = handler;
+    }
   }
+
 
   setDeleteButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__reset-btn`)

@@ -1,6 +1,7 @@
 import PointComponent from "../components/point.js";
 import SiteFormComponent from "../components/site-form.js";
 import { render, replace, remove, RenderPosition } from "../utils/render.js";
+import {offersArray} from "../mock/point.js";
 
 export const Mode = {
   ADDING: `adding`,
@@ -9,7 +10,27 @@ export const Mode = {
 };
 
 export const EmptyTask = {
-  city: ``,
+  id: ``,
+  type: `Flight`,
+  city: `Geneva`,
+  pretext: `to`,
+  offers: offersArray,
+  descriptions: [
+    `Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva).`,
+    `Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.`
+  ],
+  images: [
+    `<img class="event__photo" src="img/photos/1.jpg" alt="Event photo">`,
+    `<img class="event__photo" src="img/photos/2.jpg" alt="Event photo">`,
+    `<img class="event__photo" src="img/photos/3.jpg" alt="Event photo">`,
+    `<img class="event__photo" src="img/photos/4.jpg" alt="Event photo">`,
+    `<img class="event__photo" src="img/photos/5.jpg" alt="Event photo">`,
+  ],
+  startDate: new Date(),
+  endDate: new Date(),
+  price: ` `,
+  timeDifference: ` `,
+  favorite: ``,
 };
 export default class PointController {
   constructor(container, onDataChange, onViewChange) {
@@ -27,7 +48,7 @@ export default class PointController {
     const oldFormComponent = this._siteFormComponent;
     this._mode = mode;
     this._pointComponent = new PointComponent(point);
-    this._siteFormComponent = new SiteFormComponent(point);
+    this._siteFormComponent = new SiteFormComponent(point, this._mode);
 
     this._pointComponent.setClickHandler(() => {
       this._replacePointToForm();

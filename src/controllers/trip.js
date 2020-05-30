@@ -64,6 +64,7 @@ const renderDays = (points, onDataChange, onViewChange) => {
 export default class TripController {
   constructor(container, pointsModel) {
     this._container = container;
+    console.log(this._container);
     this._pointsModel = pointsModel;
 
     this._showedPointControllers = [];
@@ -100,8 +101,8 @@ export default class TripController {
     if (this._createPoint) {
       return;
     }
-    const pointListElement = pointsComponent.getElement();
-    this._creatingPoint = new PointController(pointListElement, this._onDataChange, this._onViewChange);
+    const siteTripEvents = this._container;
+    this._creatingPoint = new PointController(siteTripEvents, this._onDataChange, this._onViewChange);
     this._creatingPoint.render(EmptyTask, PointControllerMode.ADDING);
   }
 

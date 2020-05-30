@@ -48,7 +48,5 @@ const getRandomBoolean = () => {
   return (Math.floor(Math.random() * 2) === 0);
 };
 
-console.log(getRandomBoolean());
-
 export {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax, formatDate, dateDifference, convertsDateMilliseconds, getRandomBoolean};
 
