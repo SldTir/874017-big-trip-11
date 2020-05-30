@@ -11,9 +11,8 @@ export default class ButtonAddEvent extends AbstractComponent {
     return buttonAddEvent();
   }
 
-  setActiveItem(menuItem) {
-  const item = this.getElement();
-
+  setActiveItem() {
+    const item = this.getElement();
     if (item) {
       item.disabled = true;
     }
