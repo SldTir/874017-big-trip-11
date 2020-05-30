@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import { choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas } from "../mock/point.js";
-import { formatDate, convertsDateMilliseconds } from "../utils/common.js";
+import {choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
+import {formatDate, convertsDateMilliseconds} from "../utils/common.js";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -14,7 +14,7 @@ const createDescriptions = (descriptions) => {
 };
 
 const createOffer = (offer) => {
-  const { service, price, value, isChecked } = offer;
+  const {service, price, value, isChecked} = offer;
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${value}-1" type="checkbox" name="event-offer-${value}" ${isChecked ? `checked` : ``}>
@@ -28,8 +28,8 @@ const createOffer = (offer) => {
 };
 
 const createSiteForm = (point, options, mode) => {
-  const { price, favorite } = point;
-  const { type, city, pretext, offers, descriptions, images, startDate, endDate } = options;
+  const {price, favorite} = point;
+  const {type, city, pretext, offers, descriptions, images, startDate, endDate} = options;
   const offersMarkup = offers.map((offer) => createOffer(offer)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
@@ -208,13 +208,14 @@ const searchInputsOffers = () => {
   return offers;
 };
 
-const parseFormData = (formData, type, pretext, images, descriptions) => {
-  const favorite = document.querySelector(`.event__favorite-checkbox`).checked;
+const parseFormData = (formData, id, type, pretext, images, descriptions, mode) => {
+  const favorite = mode === `adding` ? false : document.querySelector(`.event__favorite-checkbox`).checked;
   const startDate = convertsDateMilliseconds(formData.get(`event-start-time`));
   const endDate = convertsDateMilliseconds(formData.get(`event-end-time`));
   const timeDifference = endDate - startDate;
   const offers = searchInputsOffers();
   return {
+    id,
     type,
     city: formData.get(`event-destination`),
     pretext,
@@ -226,7 +227,7 @@ const parseFormData = (formData, type, pretext, images, descriptions) => {
     price: formData.get(`event-price`),
     timeDifference,
     favorite,
-  }
+  };
 };
 
 export default class SiteForm extends AbstractSmartComponent {
@@ -239,6 +240,7 @@ export default class SiteForm extends AbstractSmartComponent {
     this._submitHandler = null;
     this._deleteButtonClickHandler = null;
     this._clickFavoriteHandler = null;
+    this._id = point.id;
     this._type = point.type;
     this.getTemplate = this.getTemplate.bind(this);
     this._city = point.city;
@@ -254,7 +256,7 @@ export default class SiteForm extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createSiteFormTemplate(this._point, { type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate }, this._mode);
+    return createSiteFormTemplate(this._point, {type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate}, this._mode);
   }
 
   removeElement() {
@@ -283,7 +285,7 @@ export default class SiteForm extends AbstractSmartComponent {
     const form = this.getElement();
     const formData = new FormData(form);
 
-    return parseFormData(formData, this._type, this._pretext, this._images, this._descriptions);
+    return parseFormData(formData, this._id, this._type, this._pretext, this._images, this._descriptions, this._mode);
   }
 
   setSubmitHandler(handler) {

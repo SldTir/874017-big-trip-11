@@ -9,27 +9,27 @@ const offersArray = [{
   service: `Add luggage`,
   price: `30`,
   value: `luggage`,
-  isChecked: getRandomBoolean(),
+  isChecked: true,
 }, {
   service: `Switch to comfort class`,
   price: `100`,
   value: `comfort`,
-  isChecked: getRandomBoolean(),
+  isChecked: true,
 }, {
   service: `Add meal`,
   price: `15`,
   value: `meal`,
-  isChecked: getRandomBoolean(),
+  isChecked: false,
 }, {
   service: `Choose seats`,
   price: `5`,
   value: `seats`,
-  isChecked: getRandomBoolean(),
+  isChecked: false,
 }, {
   service: `Travel by train`,
   price: `40`,
   value: `train`,
-  isChecked: getRandomBoolean(),
+  isChecked: false,
 }];
 
 const descriptions = [

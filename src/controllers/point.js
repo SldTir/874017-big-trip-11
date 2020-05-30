@@ -1,6 +1,6 @@
 import PointComponent from "../components/point.js";
 import SiteFormComponent from "../components/site-form.js";
-import { render, replace, remove, RenderPosition } from "../utils/render.js";
+import {render, replace, remove, RenderPosition} from "../utils/render.js";
 import {offersArray} from "../mock/point.js";
 
 export const Mode = {
@@ -10,7 +10,7 @@ export const Mode = {
 };
 
 export const EmptyTask = {
-  id: ``,
+  id: String(new Date() + Math.random()),
   type: `Flight`,
   city: `Geneva`,
   pretext: `to`,
@@ -72,7 +72,7 @@ export default class PointController {
       replace(this._pointComponent, oldPointComponent);
       replace(this._siteFormComponent, oldFormComponent);
       this._replaceFormToPoint();
-    } else {
+    } else if (this._mode !== Mode.ADDING) {
       render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
     }
 
@@ -92,7 +92,8 @@ export default class PointController {
           remove(oldFormComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._siteFormComponent, RenderPosition.AFTERBEGIN);
+        const tripEventsSort = this._container.querySelector(`.trip-events__trip-sort`);
+        render(this._container, this._siteFormComponent, RenderPosition.AFTER_END, tripEventsSort);
         break;
     }
   }

@@ -38,7 +38,6 @@ const mapController = new TripController(siteTripEventElement, pointsModel);
 mapController.render(points);
 
 buttonAddEventComponent.setOnChange(() => {
-  // buttonAddEventComponent.setActiveItem(MenuItem.NEW_EVENT);
+  buttonAddEventComponent.setActiveItem(MenuItem.NEW_EVENT);
   mapController.createPoint();
-
 });

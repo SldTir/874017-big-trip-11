@@ -11,13 +11,13 @@ export default class ButtonAddEvent extends AbstractComponent {
     return buttonAddEvent();
   }
 
-  // setActiveItem(menuItem) {
-  //   const item = this.getElement().querySelector(`.${menuItem}`);
+  setActiveItem(menuItem) {
+  const item = this.getElement();
 
-  //   if (item) {
-  //     item.checked = true;
-  //   }
-  // }
+    if (item) {
+      item.disabled = true;
+    }
+  }
 
   setOnChange(handler) {
     this.getElement().addEventListener(`click`, (evt) => {

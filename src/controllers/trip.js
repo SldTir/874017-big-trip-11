@@ -1,16 +1,11 @@
-import SiteSortComponent, { SortType } from "../components/site-sort.js";
+import SiteSortComponent, {SortType} from "../components/site-sort.js";
 import DayListComponent from "../components/day-list.js";
-import PointComponent from "../components/point.js";
 import NoPointsComponent from "../components/no-points";
 import DayInfoComponent from "../components/day-info";
-import PointController, { Mode as PointControllerMode, EmptyTask } from "../controllers/point";
-import { render, RenderPosition } from "../utils/render.js";
+import PointController, {Mode as PointControllerMode, EmptyTask} from "../controllers/point";
+import {render, RenderPosition} from "../utils/render.js";
 
 const sitePageMainElement = document.querySelector(`.page-main`);
-const siteHeaderElement = document.querySelector(`.page-header`);
-const siteTropControl = siteHeaderElement.querySelector(`.trip-controls`);
-const siteTripControlHeaderFilter = siteTropControl.querySelector(`h2:nth-child(2)`);
-
 
 const renderDateInfo = (day, index) => {
   const dayInfoComponent = new DayInfoComponent(day, index);
@@ -64,7 +59,6 @@ const renderDays = (points, onDataChange, onViewChange) => {
 export default class TripController {
   constructor(container, pointsModel) {
     this._container = container;
-    console.log(this._container);
     this._pointsModel = pointsModel;
 
     this._showedPointControllers = [];
@@ -159,9 +153,16 @@ export default class TripController {
         this._updatePoints();
       } else {
         this._pointsModel.addPoint(newData);
-        pointController.render(newData, PointControllerMode.DEFAULT);
+        const updatedPoints = this._pointsModel.getPointsAll().sort((a, b) => a.startDate - b.startDate);
+        this._removePoints();
+        const newDays = renderDays(updatedPoints, this._onViewChange, this._onDataChange);
+        this._showedPointControllers = [].concat(newDays);
+        const tripEvents = document.querySelector(`.trip-events`);
+        const newform = tripEvents.querySelector(`.trip-events__item`);
+        newform.innerHTML = ``;
+        const addFormBtn = document.querySelector(`.trip-main__event-add-btn`);
+        addFormBtn.disabled = false;
         this._showedPointControllers = [].concat(pointController, this._showedPointControllers);
-        this._showedPointControllers = this._showedPointControllers.length;
       }
     } else if (newData === null) {
       this._pointsModel.removePoint(oldData.id);
