@@ -40,4 +40,10 @@ mapController.render(points);
 buttonAddEventComponent.setOnChange(() => {
   buttonAddEventComponent.setActiveItem(MenuItem.NEW_EVENT);
   mapController.createPoint();
+  pointsModel.setFilter(`Everything`);
+  const filterEverything = document.querySelector(`#filter-everything`);
+  filterEverything.checked = true;
+  mapController._onSortTypeChange(`Event`);
+  const sortEvent = document.querySelector(`#sort-event`);
+  sortEvent.checked = true;
 });

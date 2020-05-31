@@ -304,7 +304,6 @@ export default class SiteForm extends AbstractSmartComponent {
   setDeleteButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__reset-btn`)
       .addEventListener(`click`, handler);
-
     this._deleteButtonClickHandler = handler;
   }
 

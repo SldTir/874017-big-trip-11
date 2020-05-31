@@ -146,11 +146,13 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
+    const addFormBtn = document.querySelector(`.trip-main__event-add-btn`);
     if (oldData === EmptyTask) {
       this._creatingPoint = null;
-      if (newData === EmptyTask) {
+      if (newData === null) {
         pointController.destroy();
         this._updatePoints();
+        addFormBtn.disabled = false;
       } else {
         this._pointsModel.addPoint(newData);
         const updatedPoints = this._pointsModel.getPointsAll().sort((a, b) => a.startDate - b.startDate);
@@ -160,7 +162,6 @@ export default class TripController {
         const tripEvents = document.querySelector(`.trip-events`);
         const newform = tripEvents.querySelector(`.trip-events__item`);
         newform.innerHTML = ``;
-        const addFormBtn = document.querySelector(`.trip-main__event-add-btn`);
         addFormBtn.disabled = false;
         this._showedPointControllers = [].concat(pointController, this._showedPointControllers);
       }

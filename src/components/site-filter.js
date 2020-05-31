@@ -52,6 +52,8 @@ export default class SiteFilter extends AbstractComponent {
       input.addEventListener(`click`, (evt) => {
         const filterName = getFilterNameById(evt.target.id);
         const filterNameUppercase = filterName[0].toUpperCase() + filterName.slice(1);
+        const inputEvent = document.querySelector(`#sort-event`);
+        inputEvent.checked = true;
         handler(filterNameUppercase);
       });
     });

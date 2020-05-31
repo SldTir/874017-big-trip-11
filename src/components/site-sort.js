@@ -67,7 +67,6 @@ export default class SiteSort extends AbstractComponent {
       targetImput.checked = true;
 
       this._currenSortType = sortType;
-
       handler(this._currenSortType);
     });
   }
