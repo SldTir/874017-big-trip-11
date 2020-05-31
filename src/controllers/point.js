@@ -46,7 +46,9 @@ export default class PointController {
   render(point, mode) {
     const oldPointComponent = this._pointComponent;
     const oldFormComponent = this._siteFormComponent;
-    this._mode = mode;
+    if (mode) {
+      this._mode = mode;
+    }
     this._pointComponent = new PointComponent(point);
     this._siteFormComponent = new SiteFormComponent(point, this._mode);
 
@@ -68,15 +70,7 @@ export default class PointController {
       }));
     });
 
-    if (oldPointComponent && oldFormComponent) {
-      replace(this._pointComponent, oldPointComponent);
-      replace(this._siteFormComponent, oldFormComponent);
-      this._replaceFormToPoint();
-    } else if (this._mode !== Mode.ADDING) {
-      render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
-    }
-
-    switch (mode) {
+    switch (this._mode) {
       case Mode.DEFAULT:
         if (oldFormComponent && oldPointComponent) {
           replace(this._pointComponent, oldPointComponent);
