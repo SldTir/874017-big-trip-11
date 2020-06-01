@@ -27,14 +27,14 @@ const formatDate = (date) => {
 };
 
 const filtersBusValues = (value, unit) => {
-  const filteredValue = value ? `${value}${unit}` : ``;
+  const filteredValue = value > 0 ? `${value}${unit}` : ``;
   return filteredValue;
 };
 
 const dateDifference = (startDate, endDate) => {
-  const daysDifference = moment.duration(endDate - startDate).days();
-  const hourDifference = moment.duration(endDate - startDate).hours();
-  const minuteDifference = moment.duration(endDate - startDate).minutes();
+  const daysDifference = moment.duration(endDate - startDate).days().toString().padStart(2, `0`);
+  const hourDifference = moment.duration(endDate - startDate).hours().toString().padStart(2, `0`);
+  const minuteDifference = moment.duration(endDate - startDate).minutes().toString().padStart(2, `0`);
 
   return `${filtersBusValues(daysDifference, `D`)} ${filtersBusValues(hourDifference, `H`)} ${filtersBusValues(minuteDifference, `M`)}`;
 };

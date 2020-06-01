@@ -1,7 +1,7 @@
 import PointComponent from "../components/point.js";
 import SiteFormComponent from "../components/site-form.js";
-import {render, replace, remove, RenderPosition} from "../utils/render.js";
-import {offersArray} from "../mock/point.js";
+import { render, replace, remove, RenderPosition } from "../utils/render.js";
+import { offersArray } from "../mock/point.js";
 
 export const Mode = {
   ADDING: `adding`,
@@ -53,7 +53,7 @@ export default class PointController {
     this._siteFormComponent = new SiteFormComponent(point, this._mode);
 
     this._pointComponent.setClickHandler(() => {
-    this._replacePointToForm();
+      this._replacePointToForm();
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
@@ -65,6 +65,7 @@ export default class PointController {
     this._siteFormComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
 
     this._siteFormComponent.setFavoritesButtonClickHandler(() => {
+      debugger;
       this._onDataChange(this, point, Object.assign({}, point, {
         favorite: !point.favorite,
       }));
@@ -72,6 +73,15 @@ export default class PointController {
 
     switch (this._mode) {
       case Mode.DEFAULT:
+        if (oldFormComponent && oldPointComponent) {
+          replace(this._pointComponent, oldPointComponent);
+          replace(this._siteFormComponent, oldFormComponent);
+          this._replacePointToForm();
+        } else {
+          render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.FORM:
         if (oldFormComponent && oldPointComponent) {
           replace(this._pointComponent, oldPointComponent);
           replace(this._siteFormComponent, oldFormComponent);

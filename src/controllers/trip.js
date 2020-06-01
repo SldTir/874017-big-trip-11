@@ -114,7 +114,6 @@ export default class TripController {
 
   _onViewChange() {
     this._showedPointControllers.forEach((it) => {
-      console.log(it);
       return it.setDefaultView();
     });
   }
@@ -175,8 +174,10 @@ export default class TripController {
       this._updatePoints();
     } else {
       const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
+      const updatedPoints = this._pointsModel.getPoints().sort((a, b) => a.startDate - b.startDate);
       if (isSuccess) {
-        pointController.render(newData);
+        this._removePoints();
+        renderDays(updatedPoints, this._onDataChange, this._onViewChange);
       }
     }
   }

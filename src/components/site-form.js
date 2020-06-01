@@ -294,7 +294,6 @@ export default class SiteForm extends AbstractSmartComponent {
   setFavoritesButtonClickHandler(handler) {
     if (this._mode !== `adding`) {
       this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
-
       this._clickFavoriteHandler = handler;
     }
   }
