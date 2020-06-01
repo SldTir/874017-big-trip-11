@@ -46,14 +46,14 @@ export default class PointController {
   render(point, mode) {
     const oldPointComponent = this._pointComponent;
     const oldFormComponent = this._siteFormComponent;
+    this._pointComponent = new PointComponent(point);
     if (mode) {
       this._mode = mode;
     }
-    this._pointComponent = new PointComponent(point);
     this._siteFormComponent = new SiteFormComponent(point, this._mode);
 
     this._pointComponent.setClickHandler(() => {
-      this._replacePointToForm();
+    this._replacePointToForm();
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 

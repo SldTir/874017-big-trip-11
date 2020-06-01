@@ -113,7 +113,10 @@ export default class TripController {
   }
 
   _onViewChange() {
-    this._showedPointControllers.forEach((it) => it.setDefaultView());
+    this._showedPointControllers.forEach((it) => {
+      console.log(it);
+      return it.setDefaultView();
+    });
   }
 
   _onSortTypeChange(sortType) {
@@ -155,15 +158,17 @@ export default class TripController {
         addFormBtn.disabled = false;
       } else {
         this._pointsModel.addPoint(newData);
-        const updatedPoints = this._pointsModel.getPointsAll().sort((a, b) => a.startDate - b.startDate);
+        const updatedPoints = this._pointsModel.getPoints().sort((a, b) => a.startDate - b.startDate);
         this._removePoints();
-        const newDays = renderDays(updatedPoints, this._onViewChange, this._onDataChange);
+        const newDays = renderDays(updatedPoints, this._onDataChange, this._onViewChange);
         this._showedPointControllers = [].concat(newDays);
-        const tripEvents = document.querySelector(`.trip-events`);
-        const newform = tripEvents.querySelector(`.trip-events__item`);
-        newform.innerHTML = ``;
         addFormBtn.disabled = false;
         this._showedPointControllers = [].concat(pointController, this._showedPointControllers);
+        this._showedPointControllers.forEach((element) => {
+          if (element._mode === `adding`) {
+            element.destroy();
+          }
+        });
       }
     } else if (newData === null) {
       this._pointsModel.removePoint(oldData.id);
