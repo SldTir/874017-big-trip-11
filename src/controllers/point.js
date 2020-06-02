@@ -52,6 +52,8 @@ export default class PointController {
     }
     this._siteFormComponent = new SiteFormComponent(point, this._mode);
 
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+
     this._pointComponent.setClickHandler(() => {
       this._replacePointToForm();
       document.addEventListener(`keydown`, this._onEscKeyDown);
@@ -65,7 +67,6 @@ export default class PointController {
     this._siteFormComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
 
     this._siteFormComponent.setFavoritesButtonClickHandler(() => {
-      debugger;
       this._onDataChange(this, point, Object.assign({}, point, {
         favorite: !point.favorite,
       }));
@@ -129,7 +130,6 @@ export default class PointController {
 
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
     if (isEscKey) {
       if (this._mode === Mode.ADDING) {
         this._onDataChange(this, EmptyTask, null);

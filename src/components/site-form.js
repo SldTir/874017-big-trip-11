@@ -346,9 +346,14 @@ export default class SiteForm extends AbstractSmartComponent {
     elemetList.forEach((element) => {
       element.addEventListener(`click`, (evt) => {
         const elementInputValueUpperCase = `${evt.target.value[0].toUpperCase()}${evt.target.value.slice(1)}`;
+        const elemetListChecked = this.getElement().querySelector(`.event__type-input[checked]`);
+        elemetListChecked.removeAttribute(`checked`);
+        element.checked = true;
+        element.setAttribute(`checked`, ``);
         this._type = elementInputValueUpperCase;
         this._pretext = choosesPretext(elementInputValueUpperCase);
         this._offers = generateRanodmArray(offersArray);
+        debugger;
         this.rerender();
       });
     });
