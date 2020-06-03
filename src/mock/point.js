@@ -1,9 +1,50 @@
-import {getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax} from "../utils/common.js";
+import { getRandomArrayItem, getRandomNumberFloor, getRandomNumberCeil, getRandomNumberMinMax } from "../utils/common.js";
 
 const NUMBER_OFFERS = 5;
 const COMPENSATOR = 1;
 const NUMBER_IMAGE = 5;
-const types = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
+const typeList = [
+  {
+    type: `Taxi`,
+    isChecked: false,
+  },
+  {
+    type: `Bus`,
+    isChecked: false,
+  },
+  {
+    type: `Train`,
+    isChecked: false,
+  },
+  {
+    type: `Ship`,
+    isChecked: false,
+  },
+  {
+    type: `Transport`,
+    isChecked: false,
+  },
+  {
+    type: `Drive`,
+    isChecked: false,
+  },
+  {
+    type: `Flight`,
+    isChecked: false,
+  },
+  {
+    type: `Check-in`,
+    isChecked: false,
+  },
+  {
+    type: `Sightseeing`,
+    isChecked: false,
+  },
+  {
+    type: `Restaurant`,
+    isChecked: false,
+  },
+];
 const citys = [`Almaty`, `Bandung`, `Havana`, `Astana`, `Bucharest`, `Jerusalem`, `Gwangju`, `Liverpool`, `Mexico`, `Osaka`];
 const offersArray = [{
   service: `Add luggage`,
@@ -114,16 +155,29 @@ const difference = (startDate, endDate) => {
   return differenceTime;
 };
 
+const getRandomCheckedPoint = (types, typePoint) => {
+  const cloneTypeList = JSON.parse(JSON.stringify(types));
+  const randomCheckedPoint = cloneTypeList.map((element) => {
+    if (element.type === typePoint) {
+      element.isChecked = true;
+      return element;
+    }
+    return element;
+  });
+  return randomCheckedPoint;
+};
+
+
 const generatePoint = function () {
   const dateOne = generateRandomDate().getTime();
   const dateTwo = generateRandomDate().getTime();
   const startDate = Math.min(dateOne, dateTwo);
   const endDate = Math.max(dateOne, dateTwo);
-
-  const type = getRandomArrayItem(types);
+  const type = getRandomArrayItem(typeList);
   return ({
     id: String(new Date() + Math.random()),
-    type,
+    typeList: getRandomCheckedPoint(typeList, type.type),
+    type: type.type,
     city: getRandomArrayItem(citys),
     pretext: choosesPretext(type),
     offers: generateRanodmArray(offersArray),
@@ -140,8 +194,8 @@ const generatePoint = function () {
 
 const generatePoints = (count) => {
   return new Array(count)
-  .fill(``)
-  .map(generatePoint);
+    .fill(``)
+    .map(generatePoint);
 };
 
-export {generatePoints, choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas};
+export { generatePoints, choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas };

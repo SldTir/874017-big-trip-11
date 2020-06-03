@@ -10,6 +10,7 @@ import { render, RenderPosition } from "./utils/render.js";
 const COUNT_POINT = 15;
 
 const points = generatePoints(COUNT_POINT).sort((a, b) => a.startDate - b.startDate);
+console.log(points);
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 

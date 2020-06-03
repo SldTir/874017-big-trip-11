@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import { choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas } from "../mock/point.js";
+import { choosesPretext, generateRanodmArray, offersArray, generateRandomDescription, generateRanodmImagas} from "../mock/point.js";
 import { formatDate, convertsDateMilliseconds } from "../utils/common.js";
 import flatpickr from "flatpickr";
 
@@ -27,9 +27,37 @@ const createOffer = (offer) => {
   );
 };
 
+
+const createInputs = (type) => {
+  const typeInput = type.type.toLowerCase();
+  const isChecked = type.isChecked ? `checked` : ``;
+  return (
+    `<div class="event__type-item">
+        <input id="event-type-${typeInput}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeInput}" ${isChecked}>
+        <label class="event__type-label  event__type-label--${typeInput}" for="event-type-${typeInput}-1">${typeInput}</label>
+      </div>`
+  );
+};
+
+const createFieldset = (typesArray) => {
+  const fieldsetTransport = typesArray.slice(0, 7).map((type) => createInputs(type)).join(`\n`);
+  const fieldsetEvents = typesArray.slice(7).map((type) => createInputs(type)).join(`\n`);
+  return (
+    `<fieldset class="event__type-group">
+    <legend class="visually-hidden">Transfer</legend>
+    ${fieldsetTransport}
+    </fieldset>
+
+   <fieldset class="event__type-group">
+   ${fieldsetEvents}
+  </fieldset>`
+  );
+};
+
 const createSiteForm = (point, options, mode) => {
   const { price, favorite } = point;
-  const { type, city, pretext, offers, descriptions, images, startDate, endDate } = options;
+  const {typeList, type, city, pretext, offers, descriptions, images, startDate, endDate } = options;
+  const fieldsetMarkup = createFieldset(typeList);
   const offersMarkup = offers.map((offer) => createOffer(offer)).join(`\n`);
   const descriptionMarkup = createDescriptions(descriptions);
   const imagesMarkup = createImages(images);
@@ -69,64 +97,8 @@ const createSiteForm = (point, options, mode) => {
         <img class="event__type-icon" width="17" height="17" src="img/icons/${typeLowerCase}.png" alt="Event type icon">
       </label>
       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
-      <div class="event__type-list">
-        <fieldset class="event__type-group">
-          <legend class="visually-hidden">Transfer</legend>
-
-          <div class="event__type-item">
-            <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-            <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-            <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-            <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-            <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-            <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-            <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-          </div>
-          <div class="event__type-item">
-          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-        </div>
-        </fieldset>
-
-        <fieldset class="event__type-group">
-          <legend class="visually-hidden">Activity</legend>
-
-          <div class="event__type-item">
-            <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-            <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-            <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-            <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-          </div>
-        </fieldset>
+        <div class="event__type-list">
+      ${fieldsetMarkup}
       </div>
     </div>
 
@@ -208,7 +180,7 @@ const searchInputsOffers = () => {
   return offers;
 };
 
-const parseFormData = (formData, id, type, pretext, images, descriptions, mode) => {
+const parseFormData = (formData, id, typeList, type, pretext, images, descriptions, mode) => {
   const favorite = mode === `adding` ? false : document.querySelector(`.event__favorite-checkbox`).checked;
   const startDate = convertsDateMilliseconds(formData.get(`event-start-time`));
   const endDate = convertsDateMilliseconds(formData.get(`event-end-time`));
@@ -216,6 +188,7 @@ const parseFormData = (formData, id, type, pretext, images, descriptions, mode) 
   const offers = searchInputsOffers();
   return {
     id,
+    typeList,
     type,
     city: formData.get(`event-destination`),
     pretext,
@@ -240,6 +213,7 @@ export default class SiteForm extends AbstractSmartComponent {
     this._deleteButtonClickHandler = null;
     this._clickFavoriteHandler = null;
     this._id = point.id;
+    this._typeList = point.typeList;
     this._type = point.type;
     this.getTemplate = this.getTemplate.bind(this);
     this._city = point.city;
@@ -256,7 +230,7 @@ export default class SiteForm extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createSiteFormTemplate(this._point, { type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate }, this._mode);
+    return createSiteFormTemplate(this._point, {typeList: this._typeList, type: this._type, city: this._city, pretext: this._pretext, offers: this._offers, descriptions: this._descriptions, images: this._images, startDate: this._startDate, endDate: this._endDate }, this._mode);
   }
 
   removeElement() {
@@ -283,7 +257,7 @@ export default class SiteForm extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    return parseFormData(formData, this._id, this._type, this._pretext, this._images, this._descriptions, this._mode);
+    return parseFormData(formData, this._id, this._typeList, this._type, this._pretext, this._images, this._descriptions, this._mode);
   }
 
   setSubmitHandler(handler) {
@@ -343,17 +317,20 @@ export default class SiteForm extends AbstractSmartComponent {
 
   _subscribeOnEvents() {
     const elemetList = this.getElement().querySelectorAll(`.event__type-input`);
-    elemetList.forEach((element) => {
+    elemetList.forEach((element, index) => {
       element.addEventListener(`click`, (evt) => {
         const elementInputValueUpperCase = `${evt.target.value[0].toUpperCase()}${evt.target.value.slice(1)}`;
         const elemetListChecked = this.getElement().querySelector(`.event__type-input[checked]`);
         elemetListChecked.removeAttribute(`checked`);
         element.checked = true;
-        element.setAttribute(`checked`, ``);
+        const inputCheckedId = this._typeList.find((type) => {
+          return type.isChecked === true;
+        });
+        inputCheckedId.isChecked = false;
+        this._typeList[index].isChecked = true;
         this._type = elementInputValueUpperCase;
         this._pretext = choosesPretext(elementInputValueUpperCase);
         this._offers = generateRanodmArray(offersArray);
-        debugger;
         this.rerender();
       });
     });
